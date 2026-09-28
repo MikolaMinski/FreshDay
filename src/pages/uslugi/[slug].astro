@@ -69,7 +69,7 @@ const schema = [
     </div>
     <div class="actions">
       <a href="#zayavka" class="btn btn--accent">
-        Рассчитать {data.name.toLowerCase()} <Icon name="arrow" />
+        Рассчитать стоимость <Icon name="arrow" />
       </a>
     </div>
   </PageHero>
@@ -134,7 +134,7 @@ const schema = [
     </section>
   )}
 
-  <OrderSection preset={service.id} title={`Рассчитайте стоимость: ${data.name.toLowerCase()}`} />
+  <OrderSection preset={service.id} title={`Сколько стоит ${data.name.toLowerCase()}?`} />
   {data.faq.length > 0 && <Faq items={data.faq} title={`Вопросы о формате «${data.name}»`} />}
 
   <section class="section section--tint">

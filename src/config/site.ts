@@ -7,11 +7,13 @@
  */
 export const SITE = {
   /** Домен сайта без слэша в конце. Используется для canonical, sitemap и Open Graph. */
-  url: 'https://samobranka.by', // TODO: ваш домен
+  url: 'https://freshday.by', // TODO: проверьте домен
   /** Название бренда */
-  name: 'Самобранка', // TODO: ваше название
+  name: 'Fresh Day',
+  /** Написание кириллицей — люди ищут и так, и так */
+  alternateName: 'Фреш Дэй',
   /** Юридическое название — выводится в подвале (требование законодательства РБ) */
-  legalName: 'ООО «Самобранка», УНП 000000000', // TODO
+  legalName: 'ООО «…», УНП 000000000', // TODO: юрлицо и УНП
   tagline: 'Кейтеринг в Минске',
   city: 'Минск',
   locale: 'ru_BY',
@@ -25,10 +27,10 @@ export const SITE = {
   contacts: {
     phone: '+375 29 000-00-00', // TODO
     phoneHref: '+375290000000', // TODO: тот же номер без пробелов
-    email: 'hello@samobranka.by', // TODO
-    telegram: 'https://t.me/samobranka_by', // TODO
+    email: 'hello@freshday.by', // TODO
+    telegram: 'https://t.me/freshday_by', // TODO
     viber: 'viber://chat?number=%2B375290000000', // TODO
-    instagram: 'https://instagram.com/samobranka.by', // TODO
+    instagram: 'https://instagram.com/freshday.by', // TODO
     address: {
       street: 'ул. Примерная, 1', // TODO: адрес кухни/офиса
       locality: 'Минск',

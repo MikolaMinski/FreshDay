@@ -8,15 +8,15 @@
   /* Палитра */
   --c-bg: oklch(97.5% 0.012 85);
   --c-surface: oklch(99.2% 0.005 85);
-  --c-ink: oklch(24% 0.02 150);
-  --c-muted: oklch(47% 0.02 150);
+  --c-ink: oklch(24% 0.025 145);
+  --c-muted: oklch(46% 0.025 145);
   --c-line: oklch(88% 0.015 90);
-  --c-primary: oklch(36% 0.06 158); /* глубокий зелёный — как бархатные скатерти */
+  --c-primary: oklch(38% 0.08 145); /* глубокий зелёный — как листья на логотипе */
   --c-primary-ink: oklch(98% 0.01 90);
-  --c-accent: oklch(70% 0.12 70); /* тёплое золото — для тёмного фона и кнопок */
-  --c-accent-text: oklch(50% 0.1 65); /* золото для текста на светлом фоне (контраст AA) */
-  --c-accent-soft: oklch(93% 0.04 80);
-  --c-dark: oklch(20% 0.02 160);
+  --c-accent: oklch(81% 0.16 127); /* свежий салатовый из логотипа — для тёмного фона и кнопок */
+  --c-accent-text: oklch(46% 0.12 140); /* зелёный для текста на светлом фоне (контраст AA) */
+  --c-accent-soft: oklch(94% 0.05 125);
+  --c-dark: oklch(21% 0.03 150);
 
   /* Типографика */
   --font-display: 'Cormorant Variable', 'Cormorant', Georgia, serif;

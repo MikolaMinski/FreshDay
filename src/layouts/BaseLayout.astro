@@ -56,7 +56,7 @@ if (typeof image === 'string') {
 }
 
 const jsonLd = [
-  organizationSchema('/favicon.svg'),
+  organizationSchema('/logo.png'),
   websiteSchema(),
   ...(breadcrumbs ? [breadcrumbSchema(breadcrumbs)] : []),
   ...schema,
@@ -84,10 +84,11 @@ const googleVerification = import.meta.env.PUBLIC_GOOGLE_VERIFICATION;
     <link rel="preload" href={manropeWoff} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={cormorantWoff} as="font" type="font/woff2" crossorigin />
 
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#1f3a2e" />
+    <meta name="theme-color" content="#1b3a22" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- Open Graph / соцсети и мессенджеры -->

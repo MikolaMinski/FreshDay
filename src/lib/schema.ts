@@ -15,6 +15,7 @@ export function organizationSchema(logo?: string) {
     '@type': ['LocalBusiness', 'FoodEstablishment'],
     '@id': orgId,
     name: SITE.name,
+    alternateName: SITE.alternateName,
     legalName: SITE.legalName,
     description: SITE.defaultDescription,
     url: SITE.url + '/',
@@ -48,6 +49,7 @@ export function websiteSchema() {
     '@id': `${SITE.url}/#website`,
     url: SITE.url + '/',
     name: SITE.name,
+    alternateName: SITE.alternateName,
     inLanguage: SITE.lang,
     publisher: { '@id': orgId },
   };

@@ -1,0 +1,63 @@
+---
+import { steps } from '@/data/content';
+---
+
+<section class="section section--dark">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Как мы работаем</span>
+      <h2>От заявки до праздника — 4 шага</h2>
+      <p>Никаких долгих согласований. Большинство заказов оформляем за один день.</p>
+    </div>
+    <ol class="steps" data-stagger>
+      {steps.map((s, i) => (
+        <li data-reveal>
+          <span class="steps__num">0{i + 1}</span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    counter-reset: step;
+  }
+  .steps li {
+    position: relative;
+    padding: 2rem 1.5rem;
+    border: 1px solid oklch(100% 0 0 / 0.12);
+    border-radius: var(--radius);
+    transition:
+      background 0.4s,
+      border-color 0.4s;
+  }
+  .steps li:hover {
+    background: oklch(100% 0 0 / 0.04);
+    border-color: var(--c-accent);
+  }
+  .steps__num {
+    display: block;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--c-accent);
+  }
+  .steps h3 {
+    font-size: var(--fs-xl);
+    margin-bottom: 0.6rem;
+  }
+  .steps p {
+    color: oklch(82% 0.02 150);
+    font-size: var(--fs-sm);
+  }
+</style>

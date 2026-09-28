@@ -1,0 +1,254 @@
+---
+/**
+ * Форма заявки. Работает и без JavaScript (обычная отправка + страница «Спасибо»),
+ * а с JS — отправляется в фоне и показывает результат на месте.
+ * Куда уходят заявки — настраивается в public/api/config.php (см. README).
+ */
+import { getCollection } from 'astro:content';
+import { SITE } from '@/config/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Предвыбранный формат (id услуги) */
+  preset?: string;
+}
+const { preset } = Astro.props;
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<form class="form" action={SITE.formEndpoint} method="post" data-lead-form novalidate>
+  <div class="form__row">
+    <label class="field">
+      <span>Ваше имя *</span>
+      <input
+        name="name"
+        type="text"
+        autocomplete="name"
+        required
+        minlength="2"
+        maxlength="60"
+        placeholder="Как к вам обращаться"
+      />
+    </label>
+    <label class="field">
+      <span>Телефон *</span>
+      <input
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        required
+        placeholder="+375 (__) ___-__-__"
+        pattern="\+?[\d\s\(\)\-]{9,20}"
+      />
+    </label>
+  </div>
+  <div class="form__row">
+    <label class="field">
+      <span>Формат</span>
+      <select name="format">
+        {services.map((s) => (
+          <option value={s.data.name} selected={s.id === preset}>
+            {s.data.name}
+          </option>
+        ))}
+        <option value="Другое">Другое / не знаю</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>Гостей</span>
+      <input name="guests" type="number" min="1" max="2000" inputmode="numeric" placeholder="40" />
+    </label>
+    <label class="field">
+      <span>Дата</span>
+      <input name="date" type="date" />
+    </label>
+  </div>
+  <label class="field">
+    <span>Комментарий</span>
+    <textarea
+      name="message"
+      rows="3"
+      maxlength="2000"
+      placeholder="Место, пожелания к меню, бюджет"
+    ></textarea>
+  </label>
+
+  <!-- Ловушка для ботов: люди это поле не видят -->
+  <label class="hp" aria-hidden="true">
+    Сайт <input name="website" type="text" tabindex="-1" autocomplete="off" />
+  </label>
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+
+  <label class="consent">
+    <input type="checkbox" name="consent" value="yes" required />
+    <span>
+      Согласен(на) на обработку персональных данных в соответствии с
+      <a href="/politika-konfidencialnosti/" target="_blank">
+        политикой конфиденциальности
+      </a>
+    </span>
+  </label>
+
+  <button class="btn btn--accent form__submit" type="submit">
+    <span>Отправить заявку</span>
+    <Icon name="arrow" />
+  </button>
+  <p class="form__status" role="status" aria-live="polite"></p>
+  <p class="form__alt">
+    Или напишите нам:
+    <a href={SITE.contacts.telegram} target="_blank" rel="noopener">
+      Telegram
+    </a>{' '}
+    ·<a href={SITE.contacts.viber}>Viber</a> ·
+    <a href={`tel:${SITE.contacts.phoneHref}`}>{SITE.contacts.phone}</a>
+  </p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.form__status')!;
+    const submit = form.querySelector<HTMLButtonElement>('[type=submit]')!;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      if (!form.checkValidity()) {
+        form.querySelector<HTMLElement>(':invalid')?.focus();
+        status.dataset.state = 'error';
+        status.textContent = 'Проверьте поля, отмеченные красным.';
+        return;
+      }
+      submit.disabled = true;
+      status.dataset.state = 'loading';
+      status.textContent = 'Отправляем…';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.ok === false) throw new Error(data.error || res.statusText);
+        form.reset();
+        form.classList.remove('was-validated');
+        status.dataset.state = 'success';
+        status.textContent =
+          'Спасибо! Заявка отправлена — перезвоним в течение 15 минут в рабочее время.';
+        // Цель для аналитики
+        const id = import.meta.env.PUBLIC_YANDEX_METRIKA_ID;
+        if (id && window.ym) window.ym(id, 'reachGoal', 'lead');
+        window.gtag?.('event', 'generate_lead');
+      } catch {
+        status.dataset.state = 'error';
+        status.textContent =
+          'Не удалось отправить. Позвоните или напишите нам в мессенджер — ответим сразу.';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .form {
+    display: grid;
+    gap: 1rem;
+  }
+  .form__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: 1rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 3.1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-sm);
+    background: var(--c-bg);
+    font-weight: 400;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .field textarea {
+    resize: vertical;
+    field-sizing: content;
+    min-height: 5.5rem;
+  }
+  .field :is(input, select, textarea):focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--c-primary) 15%, transparent);
+  }
+  .was-validated .field :invalid {
+    border-color: oklch(58% 0.2 25);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+  }
+  .consent {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+  .consent input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+  }
+  .was-validated .consent input:invalid + span {
+    color: oklch(58% 0.2 25);
+  }
+  .form__submit {
+    width: 100%;
+  }
+  .form__submit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .form__status:empty {
+    display: none;
+  }
+  .form__status {
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .form__status[data-state='success'] {
+    background: oklch(93% 0.06 150);
+    color: oklch(35% 0.1 150);
+  }
+  .form__status[data-state='error'] {
+    background: oklch(94% 0.04 25);
+    color: oklch(45% 0.15 25);
+  }
+  .form__status[data-state='loading'] {
+    background: var(--c-accent-soft);
+  }
+  .form__alt {
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+    text-align: center;
+  }
+  .form__alt a {
+    color: var(--c-primary);
+    font-weight: 600;
+  }
+</style>

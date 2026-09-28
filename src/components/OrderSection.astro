@@ -1,0 +1,67 @@
+---
+/** Секция «Рассчитать стоимость + заявка». Якоря: #calculator и #zayavka. */
+import Calculator from './Calculator.astro';
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  preset?: string;
+  withCalculator?: boolean;
+  title?: string;
+}
+const { preset, withCalculator = true, title = 'Рассчитайте стоимость за минуту' } = Astro.props;
+---
+
+<section class="section section--dark order" id="calculator">
+  <div class:list={['container', 'order__grid', { 'order__grid--single': !withCalculator }]}>
+    <div>
+      <div class="section-head">
+        <span class="eyebrow">Смета</span>
+        <h2>{title}</h2>
+        <p>
+          Предварительный расчёт — сразу. Точную смету с меню менеджер пришлёт в течение 15 минут.
+        </p>
+      </div>
+      {withCalculator && <Calculator preset={preset} />}
+    </div>
+    <div class="order__card" id="zayavka" data-reveal>
+      <h3>Оставить заявку</h3>
+      <p>Перезвоним, уточним детали и предложим 2–3 варианта меню под ваш бюджет.</p>
+      <LeadForm preset={preset} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .order__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .order__grid--single {
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+  }
+  .order__card {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    background: var(--c-surface);
+    color: var(--c-ink);
+    border-radius: calc(var(--radius) + 6px);
+    box-shadow: var(--shadow-lg);
+    scroll-margin-top: 6rem;
+  }
+  .order__card h3 {
+    font-size: var(--fs-xl);
+  }
+  .order__card > p {
+    margin-block: 0.5rem 1.5rem;
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+  }
+  @media (max-width: 960px) {
+    .order__grid,
+    .order__grid--single {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

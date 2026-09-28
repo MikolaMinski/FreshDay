@@ -1,0 +1,188 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '@/config/site';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const { contacts } = SITE;
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <a href="/" aria-label="На главную">
+        <Logo />
+      </a>
+      <p>
+        Кейтеринг в Минске и Минском районе: фуршеты, банкеты, свадьбы, корпоративы и кофе-брейки
+        под ключ.
+      </p>
+      <div class="footer__social">
+        <a href={contacts.telegram} target="_blank" rel="noopener" aria-label="Telegram">
+          <Icon name="telegram" />
+        </a>
+        <a href={contacts.viber} aria-label="Viber">
+          <Icon name="viber" />
+        </a>
+        <a href={contacts.instagram} target="_blank" rel="noopener" aria-label="Instagram">
+          <Icon name="instagram" />
+        </a>
+      </div>
+    </div>
+
+    <nav aria-label="Услуги">
+      <p class="footer__title">Услуги</p>
+      <ul>
+        {services.map((s) => (
+          <li>
+            <a href={`/uslugi/${s.id}/`}>{s.data.h1.split(' — ')[0]}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label="Разделы">
+      <p class="footer__title">Разделы</p>
+      <ul>
+        <li>
+          <a href="/galereya/">Галерея работ</a>
+        </li>
+        <li>
+          <a href="/blog/">Статьи и советы</a>
+        </li>
+        <li>
+          <a href="/kontakty/">Контакты</a>
+        </li>
+        <li>
+          <a href="/politika-konfidencialnosti/">Политика конфиденциальности</a>
+        </li>
+      </ul>
+    </nav>
+
+    <address class="footer__contacts">
+      <p class="footer__title">Контакты</p>
+      <a href={`tel:${contacts.phoneHref}`}>
+        <Icon name="phone" size={18} />
+        {contacts.phone}
+      </a>
+      <a href={`mailto:${contacts.email}`}>
+        <Icon name="mail" size={18} />
+        {contacts.email}
+      </a>
+      <span>
+        <Icon name="pin" size={18} />
+        г. {contacts.address.locality}, {contacts.address.street}
+      </span>
+      <span>
+        <Icon name="clock" size={18} />
+        {contacts.hours}
+      </span>
+    </address>
+  </div>
+
+  <div class="container footer__bottom">
+    <span>
+      © {year} {SITE.name}. {SITE.legalName}
+    </span>
+    <span>Работаем по всему Минску и в пределах 60 км от МКАД</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--c-dark);
+    color: oklch(88% 0.02 150);
+    padding-top: clamp(3rem, 2rem + 4vw, 6rem);
+    font-size: var(--fs-sm);
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 2.5rem;
+  }
+  .footer__brand {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+    color: var(--c-primary-ink);
+  }
+  .footer__brand a {
+    text-decoration: none;
+  }
+  .footer__brand p {
+    color: oklch(80% 0.02 150);
+  }
+  .footer__social {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid oklch(100% 0 0 / 0.2);
+    border-radius: 50%;
+    transition:
+      background 0.3s,
+      color 0.3s;
+  }
+  .footer__social a:hover {
+    background: var(--c-accent);
+    color: var(--c-dark);
+  }
+  .footer__title {
+    margin-bottom: 1rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+  .footer ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .footer nav a,
+  .footer__contacts a {
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer nav a:hover,
+  .footer__contacts a:hover {
+    color: var(--c-accent);
+  }
+  .footer__contacts {
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    font-style: normal;
+  }
+  .footer__contacts > :is(a, span) {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-block: 1.5rem 6rem;
+    border-top: 1px solid oklch(100% 0 0 / 0.1);
+    font-size: var(--fs-xs);
+    color: oklch(70% 0.02 150);
+  }
+  @media (min-width: 768px) {
+    .footer__bottom {
+      padding-bottom: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const crumbs = [
+  { name: 'Главная', href: '/' },
+  { name: 'Статьи', href: '/blog/' },
+];
+const fmt = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title="Статьи о кейтеринге и организации мероприятий"
+  description="Полезные статьи о кейтеринге: как рассчитать количество еды на фуршет, выбрать кейтеринговую компанию в Минске и организовать банкет без стресса."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    title="Статьи и советы"
+    lead="Делимся опытом организации мероприятий — чтобы ваш праздник прошёл идеально."
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container posts" data-stagger>
+      {posts.map((post) => (
+        <article class="post" data-reveal>
+          <a href={`/blog/${post.id}/`}>
+            <Image
+              src={post.data.cover}
+              alt={post.data.coverAlt}
+              widths={[400, 640, 800]}
+              sizes="(max-width: 700px) 100vw, 50vw"
+              layout="none"
+            />
+            <div class="post__body">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {fmt.format(post.data.pubDate)}
+              </time>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: 2rem;
+  }
+  .post a {
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition:
+      translate 0.5s var(--ease-out),
+      box-shadow 0.5s var(--ease-out);
+  }
+  .post a:hover {
+    translate: 0 -6px;
+    box-shadow: var(--shadow-lg);
+  }
+  .post :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .post__body {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.5rem;
+  }
+  .post time {
+    font-size: var(--fs-xs);
+    color: var(--c-accent-text);
+    font-weight: 700;
+  }
+  .post h2 {
+    font-size: var(--fs-xl);
+  }
+  .post p {
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+  }
+</style>

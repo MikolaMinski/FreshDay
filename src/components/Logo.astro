@@ -1,0 +1,53 @@
+---
+/** Логотип: знак (клош) + название из настроек. Замените SVG на свой при наличии. */
+import { SITE } from '@/config/site';
+---
+
+<span class="logo">
+  <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true">
+    <circle cx="20" cy="20" r="19" fill="var(--c-accent)" />
+    <path
+      d="M9 26h22M11 26a9 9 0 0 1 18 0"
+      fill="none"
+      stroke="var(--c-dark)"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <circle cx="20" cy="15" r="1.6" fill="var(--c-dark)" />
+  </svg>
+  <span class="logo__text">
+    <span class="logo__name">{SITE.name}</span>
+    <span class="logo__tag">{SITE.tagline}</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .logo__mark {
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: rotate 0.6s var(--ease-out);
+  }
+  a:hover .logo__mark {
+    rotate: -12deg;
+  }
+  .logo__text {
+    display: grid;
+    line-height: 1;
+  }
+  .logo__name {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .logo__tag {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+</style>

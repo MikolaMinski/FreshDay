@@ -1,0 +1,184 @@
+---
+/**
+ * Базовый шаблон всех страниц: SEO-теги, Open Graph, микроразметка,
+ * шрифты, аналитика, шапка и подвал.
+ */
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import '@/styles/global.css';
+import { SITE } from '@/config/site';
+import { organizationSchema, websiteSchema, breadcrumbSchema } from '@/lib/schema';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import MobileCta from '@/components/MobileCta.astro';
+import manropeWoff from '@fontsource-variable/manrope/files/manrope-cyrillic-wght-normal.woff2?url';
+import cormorantWoff from '@fontsource-variable/cormorant/files/cormorant-cyrillic-wght-normal.woff2?url';
+
+export interface Props {
+  /** Заголовок без названия бренда — оно добавится автоматически */
+  title?: string;
+  description?: string;
+  /** Картинка для соцсетей: импорт из src/assets или путь из public */
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  /** Хлебные крошки для микроразметки (сама навигация — в компоненте Breadcrumbs) */
+  breadcrumbs?: { name: string; href: string }[];
+  /** Дополнительная микроразметка JSON-LD для конкретной страницы */
+  schema?: object[];
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  /** Прозрачная шапка поверх первого экрана */
+  overlayHeader?: boolean;
+}
+
+const {
+  title,
+  description = SITE.defaultDescription,
+  image = '/og-image.jpg',
+  imageAlt = SITE.tagline,
+  breadcrumbs,
+  schema = [],
+  type = 'website',
+  noindex = false,
+  overlayHeader = false,
+} = Astro.props;
+
+// Название бренда добавляется к заголовку автоматически из настроек
+const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.defaultTitle} | ${SITE.name}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+
+let ogImage: string;
+if (typeof image === 'string') {
+  ogImage = new URL(image, SITE.url).href;
+} else {
+  const img = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+  ogImage = new URL(img.src, SITE.url).href;
+}
+
+const jsonLd = [
+  organizationSchema('/favicon.svg'),
+  websiteSchema(),
+  ...(breadcrumbs ? [breadcrumbSchema(breadcrumbs)] : []),
+  ...schema,
+];
+
+const metrikaId = import.meta.env.PUBLIC_YANDEX_METRIKA_ID;
+const gaId = import.meta.env.PUBLIC_GA_ID;
+const yandexVerification = import.meta.env.PUBLIC_YANDEX_VERIFICATION;
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_VERIFICATION;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="preload" href={manropeWoff} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={cormorantWoff} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#1f3a2e" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph / соцсети и мессенджеры -->
+    <meta property="og:type" content={type} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Геометки для локального поиска -->
+    <meta name="geo.region" content="BY-HM" />
+    <meta name="geo.placename" content={SITE.city} />
+    <meta name="geo.position" content={`${SITE.contacts.geo.lat};${SITE.contacts.geo.lng}`} />
+
+    {yandexVerification && <meta name="yandex-verification" content={yandexVerification} />}
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+
+    {jsonLd.map((s) => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
+
+    <slot name="head" />
+
+    {metrikaId && <script is:inline define:vars={{ metrikaId }}>
+      (function (m, e, t, r, i, k, a) {
+        m[i] =
+          m[i] ||
+          function () {
+            (m[i].a = m[i].a || []).push(arguments);
+          };
+        m[i].l = 1 * new Date();
+        k = e.createElement(t);
+        a = e.getElementsByTagName(t)[0];
+        k.async = 1;
+        k.src = r;
+        a.parentNode.insertBefore(k, a);
+      })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+      ym(metrikaId, 'init', {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true,
+      });
+    </script>}
+    {gaId && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />}
+    {gaId && <script is:inline define:vars={{ gaId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', gaId);
+    </script>}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Перейти к содержимому
+    </a>
+    <Header overlay={overlayHeader} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <MobileCta />
+
+    <script>
+      import '@/scripts/reveal';
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    background: var(--c-primary);
+    color: var(--c-primary-ink);
+    border-radius: var(--radius-sm);
+    translate: 0 -200%;
+    transition: translate 0.2s;
+  }
+  .skip-link:focus {
+    translate: 0 0;
+  }
+</style>

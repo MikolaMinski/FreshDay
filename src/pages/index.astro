@@ -1,0 +1,121 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import Stats from '@/components/Stats.astro';
+import Marquee from '@/components/Marquee.astro';
+import ServicesGrid from '@/components/ServicesGrid.astro';
+import Advantages from '@/components/Advantages.astro';
+import Gallery from '@/components/Gallery.astro';
+import Process from '@/components/Process.astro';
+import Reviews from '@/components/Reviews.astro';
+import OrderSection from '@/components/OrderSection.astro';
+import Faq from '@/components/Faq.astro';
+import Icon from '@/components/Icon.astro';
+import { gallery } from '@/data/gallery';
+import { faq } from '@/data/faq';
+import { faqSchema } from '@/lib/schema';
+import { SITE } from '@/config/site';
+
+const preview = gallery.slice(0, 8);
+---
+
+<BaseLayout overlayHeader schema={[faqSchema(faq)]}>
+  <Hero />
+  <Stats />
+
+  <section class="section" id="uslugi">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Услуги</span>
+        <h2>Кейтеринг для любого повода</h2>
+        <p>
+          Выберите формат — на странице услуги есть примеры меню, цены и ответы на частые вопросы.
+        </p>
+      </div>
+      <ServicesGrid />
+    </div>
+  </section>
+
+  <Marquee />
+  <Advantages />
+
+  <section class="section">
+    <div class="container">
+      <div class="head-row">
+        <div class="section-head">
+          <span class="eyebrow">Наши работы</span>
+          <h2>Реальные мероприятия — без фотобанков</h2>
+          <p>Банкеты в усадьбах, фуршеты в офисах, свадьбы у воды и в лофтах Минска.</p>
+        </div>
+        <a href="/galereya/" class="btn btn--ghost">
+          Вся галерея <Icon name="arrow" />
+        </a>
+      </div>
+      <Gallery items={preview} id="home" />
+    </div>
+  </section>
+
+  <Process />
+  <Reviews />
+
+  <section class="section seo">
+    <div class="container seo__grid">
+      <div class="section-head">
+        <span class="eyebrow">О кейтеринге в Минске</span>
+        <h2>Выездной кейтеринг в Минске и Минском районе</h2>
+      </div>
+      <div class="prose">
+        <p>
+          <strong>{SITE.name}</strong> — кейтеринговая компания полного цикла. Мы организуем питание
+          на мероприятиях любого масштаба: от кофе-брейка на 10 участников до свадебного банкета на
+          300 гостей. Готовим на собственной кухне в Минске в день мероприятия, поэтому блюда
+          приезжают свежими, а меню можно подстроить под любые пожелания.
+        </p>
+        <p>
+          Заказать кейтеринг можно в любом районе столицы — Центральном, Советском, Первомайском,
+          Партизанском, Заводском, Ленинском, Октябрьском, Московском и Фрунзенском, — а также в
+          Минском районе: Ждановичи, Боровляны, Колодищи, Заславль, Минское море, Крыжовка, Раубичи
+          и дальше в пределах 60 км от МКАД.
+        </p>
+        <p>
+          В стоимость входит приготовление, доставка, сервировка и уборка. При заказе от 30 гостей
+          посуда, текстиль и фуршетные столы предоставляются бесплатно. Для организаций работаем по
+          договору и безналичному расчёту.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <OrderSection />
+  <Faq items={faq} />
+</BaseLayout>
+
+<style>
+  .head-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .head-row .section-head {
+    margin-bottom: 0;
+  }
+  .seo {
+    background: var(--c-surface);
+  }
+  .seo__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 2rem 4rem;
+  }
+  .seo .prose {
+    color: var(--c-muted);
+  }
+  @media (max-width: 900px) {
+    .seo__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

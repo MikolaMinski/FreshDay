@@ -1,0 +1,240 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Gallery from '@/components/Gallery.astro';
+import ServicesGrid from '@/components/ServicesGrid.astro';
+import OrderSection from '@/components/OrderSection.astro';
+import Faq from '@/components/Faq.astro';
+import Icon from '@/components/Icon.astro';
+import { byCategory } from '@/data/gallery';
+import { faqSchema, serviceSchema } from '@/lib/schema';
+import { getImage } from 'astro:assets';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services', ({ data }) => !data.draft);
+  return services.map((service) => ({ params: { slug: service.id }, props: { service } }));
+}
+
+interface Props {
+  service: CollectionEntry<'services'>;
+}
+const { service } = Astro.props;
+const { data } = service;
+const { Content } = await render(service);
+
+const url = `/uslugi/${service.id}/`;
+const crumbs = [
+  { name: 'Главная', href: '/' },
+  { name: 'Услуги', href: '/uslugi/' },
+  { name: data.name, href: url },
+];
+const photos = byCategory(data.galleryCategory);
+const coverOg = await getImage({ src: data.cover, width: 1200, format: 'jpg' });
+const schema = [
+  serviceSchema({
+    name: data.name,
+    description: data.description,
+    url,
+    priceFrom: data.priceFrom,
+    priceUnit: data.priceUnit,
+    image: coverOg.src,
+  }),
+  ...(data.faq.length ? [faqSchema(data.faq)] : []),
+];
+---
+
+<BaseLayout
+  title={data.seoTitle}
+  description={data.description}
+  image={data.cover}
+  imageAlt={data.coverAlt}
+  breadcrumbs={crumbs}
+  schema={schema}
+>
+  <PageHero
+    title={data.h1}
+    lead={data.excerpt}
+    crumbs={crumbs}
+    image={data.cover}
+    imageAlt={data.coverAlt}
+  >
+    <div class="facts">
+      <span>
+        <strong>от {data.priceFrom} BYN</strong> {data.priceUnit}
+      </span>
+      <span>
+        <strong>от {data.minGuests}</strong> гостей
+      </span>
+    </div>
+    <div class="actions">
+      <a href="#zayavka" class="btn btn--accent">
+        Рассчитать {data.name.toLowerCase()} <Icon name="arrow" />
+      </a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container layout">
+      <article class="prose">
+        <Content />
+      </article>
+      <aside class="aside">
+        <div class="aside__card" data-reveal>
+          <p class="eyebrow">Что входит</p>
+          <ul>
+            {data.highlights.map((h) => (
+              <li>
+                <Icon name="check" size={18} />
+                {h}
+              </li>
+            ))}
+          </ul>
+          <a href="#zayavka" class="btn">
+            Получить смету
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {data.menu.length > 0 && (
+    <section class="section section--tint">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Пример меню</span>
+          <h2>Что можно заказать</h2>
+          <p>Это лишь пример — финальное меню собираем под ваш вкус, бюджет и количество гостей.</p>
+        </div>
+        <div class="menu" data-stagger>
+          {data.menu.map((group) => (
+            <div class="menu__group" data-reveal>
+              <h3>{group.title}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {photos.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Фото</span>
+          <h2>{data.name}: наши работы</h2>
+        </div>
+        <Gallery items={photos} id={service.id} />
+      </div>
+    </section>
+  )}
+
+  <OrderSection preset={service.id} title={`Рассчитайте стоимость: ${data.name.toLowerCase()}`} />
+  {data.faq.length > 0 && <Faq items={data.faq} title={`Вопросы о формате «${data.name}»`} />}
+
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Другие услуги</span>
+        <h2>Может пригодиться</h2>
+      </div>
+      <ServicesGrid exclude={service.id} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .facts span {
+    padding: 0.5rem 1rem;
+    border: 1px solid oklch(100% 0 0 / 0.2);
+    border-radius: 999px;
+    font-size: var(--fs-sm);
+  }
+  .facts strong {
+    color: var(--c-accent);
+  }
+  .actions {
+    margin-top: 0.5rem;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 22rem;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .aside {
+    position: sticky;
+    top: 6rem;
+  }
+  .aside__card {
+    display: grid;
+    gap: 1.25rem;
+    padding: 2rem;
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .aside__card ul {
+    display: grid;
+    gap: 0.8rem;
+    list-style: none;
+    padding: 0;
+    font-size: var(--fs-sm);
+  }
+  .aside__card li {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .aside__card li :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+    color: var(--c-accent);
+  }
+  .menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1.5rem;
+  }
+  .menu__group {
+    padding: 2rem;
+    background: var(--c-bg);
+    border-radius: var(--radius);
+  }
+  .menu__group h3 {
+    font-size: var(--fs-xl);
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--c-line);
+  }
+  .menu__group ul {
+    display: grid;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+  }
+  .menu__group li::before {
+    content: '✦';
+    margin-right: 0.6rem;
+    color: var(--c-accent);
+    font-size: 0.7em;
+  }
+  @media (max-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .aside {
+      position: static;
+    }
+  }
+</style>

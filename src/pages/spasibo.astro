@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/config/site';
+---
+
+<BaseLayout title="Заявка отправлена" noindex>
+  <section class="section">
+    <div class="container thanks">
+      <p class="eyebrow">Готово</p>
+      <h1>Спасибо, заявка отправлена!</h1>
+      <p>Перезвоним в течение 15 минут в рабочее время ({SITE.contacts.hours.toLowerCase()}).</p>
+      <a href="/" class="btn">
+        На главную
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .thanks {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    min-height: 50vh;
+    align-content: center;
+  }
+  h1 {
+    font-size: var(--fs-3xl);
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Gallery from '@/components/Gallery.astro';
+import OrderSection from '@/components/OrderSection.astro';
+import { gallery } from '@/data/gallery';
+
+const crumbs = [
+  { name: 'Главная', href: '/' },
+  { name: 'Галерея', href: '/galereya/' },
+];
+---
+
+<BaseLayout
+  title="Фото кейтеринга в Минске — банкеты, фуршеты, свадьбы"
+  description="Галерея наших мероприятий в Минске и Минском районе: фуршеты, банкеты, свадьбы, корпоративы, кофе-брейки и выездные банкеты на природе. Только реальные фото."
+  image="/og-image.jpg"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    title="Галерея наших мероприятий"
+    lead="Только реальные фотографии с наших мероприятий. Нажмите на фото, чтобы рассмотреть подробнее."
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container">
+      <Gallery items={gallery} filters id="all" />
+    </div>
+  </section>
+  <OrderSection withCalculator={false} title="Хотите так же?" />
+</BaseLayout>

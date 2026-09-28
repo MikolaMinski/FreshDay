@@ -1,0 +1,343 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '@/config/site';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const path = Astro.url.pathname;
+const isActive = (href: string) => href !== '/' && !href.includes('#') && path.startsWith(href);
+---
+
+<header class:list={['header', { 'header--overlay': overlay }]} data-header>
+  <div class="container header__inner">
+    <a href="/" class="header__logo" aria-label={`${SITE.name} — на главную`}>
+      <Logo />
+    </a>
+
+    <nav class="header__nav" aria-label="Основное меню">
+      <ul>
+        {SITE.nav.map((item) => (
+          <li class:list={{ 'has-sub': item.href === '/uslugi/' }}>
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+            {item.href === '/uslugi/' && (
+              <ul class="sub">
+                {services.map((s) => (
+                  <li>
+                    <a href={`/uslugi/${s.id}/`}>
+                      <Icon name={s.data.icon} size={18} />
+                      {s.data.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a
+        class="header__phone"
+        href={`tel:${SITE.contacts.phoneHref}`}
+        aria-label={`Позвонить: ${SITE.contacts.phone}`}
+      >
+        <Icon name="phone" size={18} />
+        <span>{SITE.contacts.phone}</span>
+      </a>
+      <a class="btn header__cta" href="#zayavka">
+        Рассчитать
+      </a>
+      <button
+        class="header__burger"
+        popovertarget="mobile-menu"
+        aria-label="Открыть меню"
+        type="button"
+      >
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Мобильное меню на Popover API: открывается без JavaScript -->
+  <div id="mobile-menu" popover class="mobile-menu">
+    <button
+      class="mobile-menu__close"
+      popovertarget="mobile-menu"
+      popovertargetaction="hide"
+      aria-label="Закрыть меню"
+      type="button"
+    >
+      <Icon name="close" />
+    </button>
+    <nav aria-label="Мобильное меню">
+      <ul>
+        {SITE.nav.map((item) => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+      <p class="mobile-menu__label">Услуги</p>
+      <ul class="mobile-menu__services">
+        {services.map((s) => (
+          <li>
+            <a href={`/uslugi/${s.id}/`}>{s.data.name}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="mobile-menu__contacts">
+      <a class="btn" href={`tel:${SITE.contacts.phoneHref}`}>
+        <Icon name="phone" size={18} />
+        {SITE.contacts.phone}
+      </a>
+      <a class="btn btn--ghost" href={SITE.contacts.telegram} target="_blank" rel="noopener">
+        <Icon name="telegram" size={18} />
+        Telegram
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Шапка становится плотной при прокрутке; меню закрывается при переходе по якорю
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const menu = document.getElementById('mobile-menu');
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.hidePopover()));
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    color: var(--c-ink);
+    background: color-mix(in oklch, var(--c-bg) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid var(--c-line);
+    transition:
+      background 0.4s,
+      color 0.4s,
+      border-color 0.4s;
+  }
+  .header--overlay {
+    position: fixed;
+    inset-inline: 0;
+    color: var(--c-primary-ink);
+    background: transparent;
+    backdrop-filter: none;
+    border-color: transparent;
+  }
+  .header--overlay.is-scrolled {
+    color: var(--c-ink);
+    background: color-mix(in oklch, var(--c-bg) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+    border-color: var(--c-line);
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    min-height: 4.5rem;
+  }
+  .header__logo {
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .header__nav {
+    margin-inline: auto;
+  }
+  .header__nav > ul {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+  }
+  .header__nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: background 0.25s;
+  }
+  .header__nav a:hover,
+  .header__nav a[aria-current='page'] {
+    background: color-mix(in oklch, currentColor 10%, transparent);
+  }
+  .has-sub {
+    position: relative;
+  }
+  .sub {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    min-width: 15rem;
+    padding: 0.5rem;
+    list-style: none;
+    background: var(--c-surface);
+    color: var(--c-ink);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    translate: -50% 0.5rem;
+    transition:
+      opacity 0.25s,
+      translate 0.25s var(--ease-out),
+      visibility 0.25s;
+  }
+  .sub a {
+    display: flex;
+    width: 100%;
+    border-radius: var(--radius-sm);
+  }
+  .sub svg {
+    color: var(--c-accent);
+  }
+  .has-sub:hover .sub,
+  .has-sub:focus-within .sub {
+    opacity: 1;
+    visibility: visible;
+    translate: -50% 0;
+  }
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .header__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 700;
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .header__cta {
+    min-height: 2.75rem;
+    padding: 0.6rem 1.3rem;
+  }
+  .header__burger {
+    display: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid color-mix(in oklch, currentColor 25%, transparent);
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+  }
+
+  /* Мобильное меню */
+  .mobile-menu {
+    inset: 0 0 0 auto;
+    width: min(24rem, 100%);
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 5rem 2rem 2rem;
+    border: 0;
+    background: var(--c-dark);
+    color: var(--c-primary-ink);
+    overflow-y: auto;
+    translate: 100% 0;
+    transition:
+      translate 0.5s var(--ease-out),
+      display 0.5s allow-discrete,
+      overlay 0.5s allow-discrete;
+  }
+  .mobile-menu:popover-open {
+    translate: 0 0;
+  }
+  @starting-style {
+    .mobile-menu:popover-open {
+      translate: 100% 0;
+    }
+  }
+  .mobile-menu::backdrop {
+    background: oklch(0% 0 0 / 0.5);
+    backdrop-filter: blur(4px);
+  }
+  .mobile-menu__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid oklch(100% 0 0 / 0.25);
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+  }
+  .mobile-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  .mobile-menu nav > ul:first-child a {
+    display: block;
+    padding: 0.5rem 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .mobile-menu__label {
+    margin-top: 2rem;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+  .mobile-menu .mobile-menu__services a {
+    display: block;
+    padding: 0.35rem 0;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .mobile-menu__contacts {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 1080px) {
+    .header__nav,
+    .header__phone span {
+      display: none;
+    }
+    .header__actions {
+      margin-left: auto;
+    }
+    .header__burger {
+      display: grid;
+    }
+  }
+  @media (max-width: 520px) {
+    .header__cta {
+      display: none;
+    }
+  }
+</style>

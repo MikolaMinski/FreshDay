@@ -1,0 +1,339 @@
+/*
+ * Глобальные стили и дизайн-токены.
+ * Цвета, шрифты, отступы меняются в :root — компоненты используют только переменные.
+ */
+@import './fonts.css';
+
+:root {
+  /* Палитра */
+  --c-bg: oklch(97.5% 0.012 85);
+  --c-surface: oklch(99.2% 0.005 85);
+  --c-ink: oklch(24% 0.02 150);
+  --c-muted: oklch(47% 0.02 150);
+  --c-line: oklch(88% 0.015 90);
+  --c-primary: oklch(36% 0.06 158); /* глубокий зелёный — как бархатные скатерти */
+  --c-primary-ink: oklch(98% 0.01 90);
+  --c-accent: oklch(70% 0.12 70); /* тёплое золото — для тёмного фона и кнопок */
+  --c-accent-text: oklch(50% 0.1 65); /* золото для текста на светлом фоне (контраст AA) */
+  --c-accent-soft: oklch(93% 0.04 80);
+  --c-dark: oklch(20% 0.02 160);
+
+  /* Типографика */
+  --font-display: 'Cormorant Variable', 'Cormorant', Georgia, serif;
+  --font-body: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
+  --fs-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --fs-sm: clamp(0.9rem, 0.87rem + 0.15vw, 0.97rem);
+  --fs-base: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+  --fs-lg: clamp(1.15rem, 1.05rem + 0.45vw, 1.35rem);
+  --fs-xl: clamp(1.5rem, 1.25rem + 1.1vw, 2.1rem);
+  --fs-2xl: clamp(2rem, 1.5rem + 2.3vw, 3.4rem);
+  --fs-3xl: clamp(2.6rem, 1.7rem + 4.2vw, 5.4rem);
+
+  /* Отступы и форма */
+  --space-section: clamp(4rem, 3rem + 5vw, 8rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --container: 1240px;
+  --radius: 18px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px oklch(0% 0 0 / 0.04), 0 12px 32px -12px oklch(25% 0.03 150 / 0.18);
+  --shadow-lg: 0 30px 60px -20px oklch(25% 0.03 150 / 0.35);
+
+  /* Движение */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.8s;
+
+  color-scheme: light;
+  accent-color: var(--c-primary);
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  interpolate-size: allow-keywords;
+}
+body {
+  min-height: 100dvh;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+p,
+li {
+  text-wrap: pretty;
+}
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+::selection {
+  background: var(--c-accent-soft);
+}
+
+/* ---------- Утилиты раскладки ---------- */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+.section {
+  padding-block: var(--space-section);
+}
+.section--tint {
+  background: var(--c-surface);
+}
+.section--dark {
+  background: var(--c-dark);
+  color: var(--c-primary-ink);
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-accent-text);
+}
+:is(.section--dark, .hero, .phero, .footer, .mobile-menu) .eyebrow {
+  color: var(--c-accent);
+}
+.eyebrow::before {
+  content: '';
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+}
+.section-head {
+  display: grid;
+  gap: 1rem;
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+}
+.section-head h2 {
+  font-size: var(--fs-2xl);
+}
+.section-head p {
+  color: var(--c-muted);
+  font-size: var(--fs-lg);
+}
+.section--dark .section-head p {
+  color: oklch(85% 0.02 150);
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Кнопки ---------- */
+.btn {
+  --_bg: var(--c-primary);
+  --_fg: var(--c-primary-ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.75rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--_bg);
+  color: var(--_fg);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out);
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--c-accent);
+  transform: translateY(101%);
+  transition: transform 0.45s var(--ease-out);
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.btn:hover::after {
+  transform: translateY(0);
+}
+.btn--accent {
+  --_bg: var(--c-accent);
+  --_fg: var(--c-dark);
+}
+.btn--accent::after {
+  background: var(--c-primary-ink);
+}
+.btn--ghost {
+  --_bg: transparent;
+  --_fg: currentColor;
+  border-color: currentColor;
+}
+.btn--ghost:hover {
+  color: var(--c-dark);
+}
+.btn svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* ---------- Типографика контента (Markdown) ---------- */
+.prose {
+  max-width: 44rem;
+}
+.prose > * + * {
+  margin-top: 1.1em;
+}
+.prose h2 {
+  font-size: var(--fs-xl);
+  margin-top: 2em;
+}
+.prose h3 {
+  font-size: var(--fs-lg);
+  font-family: var(--font-body);
+  font-weight: 700;
+  margin-top: 1.8em;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.25em;
+}
+.prose li + li {
+  margin-top: 0.4em;
+}
+.prose li::marker {
+  color: var(--c-accent);
+}
+.prose strong {
+  color: var(--c-primary);
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  display: block;
+  overflow-x: auto;
+}
+.prose th,
+.prose td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--c-line);
+  text-align: left;
+}
+.prose th {
+  background: var(--c-accent-soft);
+}
+.prose a {
+  color: var(--c-primary);
+  font-weight: 600;
+}
+
+/* ---------- Анимации появления ----------
+ * Элементы с [data-reveal] плавно появляются при прокрутке.
+ * Класс .js ставится в <head>, поэтому без JavaScript контент виден сразу.
+ */
+.js [data-reveal] {
+  opacity: 0;
+  translate: 0 2rem;
+  transition:
+    opacity var(--dur) var(--ease-out),
+    translate var(--dur) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js [data-reveal='left'] {
+  translate: -2.5rem 0;
+}
+.js [data-reveal='zoom'] {
+  translate: none;
+  scale: 0.94;
+  transition-property: opacity, scale;
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+}
+
+/* Плавные переходы между страницами (View Transitions API, без JS) */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    translate: none;
+    scale: none;
+  }
+}

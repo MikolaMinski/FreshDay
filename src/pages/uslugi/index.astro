@@ -1,0 +1,31 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ServicesGrid from '@/components/ServicesGrid.astro';
+import Process from '@/components/Process.astro';
+import OrderSection from '@/components/OrderSection.astro';
+
+const crumbs = [
+  { name: 'Главная', href: '/' },
+  { name: 'Услуги', href: '/uslugi/' },
+];
+---
+
+<BaseLayout
+  title="Услуги кейтеринга в Минске — цены и меню"
+  description="Все услуги кейтеринга в Минске: фуршеты, банкеты, кофе-брейки, свадьбы, корпоративы и выездной кейтеринг на природе. Цены за гостя, примеры меню."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    title="Услуги кейтеринга в Минске"
+    lead="Шесть форматов, которые закрывают почти любой повод. Не нашли свой — напишите, соберём индивидуально."
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container">
+      <ServicesGrid headingLevel="h2" />
+    </div>
+  </section>
+  <Process />
+  <OrderSection />
+</BaseLayout>

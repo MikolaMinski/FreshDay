@@ -1,0 +1,58 @@
+---
+import { eventTypes } from '@/data/content';
+---
+
+<div class="marquee" aria-label="Типы мероприятий">
+  <div class="marquee__track">
+    {[0, 1].map((copy) => (
+      <ul aria-hidden={copy === 1 ? 'true' : undefined}>
+        {eventTypes.map((t) => (
+          <li>{t}</li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 1.4rem;
+    background: var(--c-accent);
+    color: var(--c-dark);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+  }
+  .marquee li {
+    padding-inline: 1.75rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-style: italic;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .marquee li::after {
+    content: '✦';
+    margin-left: 3.5rem;
+    font-size: 0.6em;
+    vertical-align: middle;
+    font-style: normal;
+  }
+  @keyframes marquee {
+    to {
+      translate: -50% 0;
+    }
+  }
+</style>

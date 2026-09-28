@@ -1,0 +1,99 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import OrderSection from '@/components/OrderSection.astro';
+import { articleSchema } from '@/lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+const { data } = post;
+const { Content } = await render(post);
+const url = `/blog/${post.id}/`;
+const crumbs = [
+  { name: 'Главная', href: '/' },
+  { name: 'Статьи', href: '/blog/' },
+  { name: data.title, href: url },
+];
+const og = await getImage({ src: data.cover, width: 1200, format: 'jpg' });
+const fmt = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title={data.seoTitle ?? data.title}
+  description={data.description}
+  image={data.cover}
+  imageAlt={data.coverAlt}
+  type="article"
+  breadcrumbs={crumbs}
+  schema={[
+    articleSchema({
+      title: data.title,
+      description: data.description,
+      url,
+      image: og.src,
+      pubDate: data.pubDate,
+      updatedDate: data.updatedDate,
+    }),
+  ]}
+>
+  <article class="section">
+    <div class="container article">
+      <header class="article__head">
+        <Breadcrumbs items={crumbs} />
+        <h1>{data.title}</h1>
+        <time datetime={data.pubDate.toISOString()}>{fmt.format(data.pubDate)}</time>
+      </header>
+      <Image
+        class="article__cover"
+        src={data.cover}
+        alt={data.coverAlt}
+        widths={[640, 960, 1280]}
+        sizes="(max-width: 900px) 100vw, 900px"
+        loading="eager"
+        fetchpriority="high"
+        layout="none"
+      />
+      <div class="prose article__body">
+        <Content />
+      </div>
+    </div>
+  </article>
+  <OrderSection />
+</BaseLayout>
+
+<style>
+  .article {
+    max-width: 900px;
+  }
+  .article__head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .article__head h1 {
+    font-size: var(--fs-2xl);
+  }
+  .article__head time {
+    color: var(--c-accent-text);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+  }
+  .article :global(.article__cover) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+    margin-bottom: 2.5rem;
+  }
+  .article__body {
+    margin-inline: auto;
+  }
+</style>

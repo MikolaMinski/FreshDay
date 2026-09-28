@@ -1,0 +1,67 @@
+---
+/** Липкая панель «Позвонить / Написать / Заявка» на телефонах — главный источник звонков с мобильных. */
+import { SITE } from '@/config/site';
+import Icon from './Icon.astro';
+---
+
+<div class="mcta" aria-label="Быстрая связь">
+  <a href={`tel:${SITE.contacts.phoneHref}`} data-goal="call">
+    <Icon name="phone" size={20} />
+    <span>Позвонить</span>
+  </a>
+  <a href={SITE.contacts.telegram} target="_blank" rel="noopener" data-goal="telegram">
+    <Icon name="telegram" size={20} />
+    <span>Telegram</span>
+  </a>
+  <a href={SITE.contacts.viber} data-goal="viber">
+    <Icon name="viber" size={20} />
+    <span>Viber</span>
+  </a>
+  <a href="#zayavka" class="mcta__main">
+    <span>Заявка</span>
+  </a>
+</div>
+
+<style>
+  .mcta {
+    position: fixed;
+    inset: auto 0.75rem max(0.75rem, env(safe-area-inset-bottom)) 0.75rem;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 1.4fr;
+    gap: 0.25rem;
+    padding: 0.35rem;
+    background: color-mix(in oklch, var(--c-dark) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-radius: 999px;
+    box-shadow: var(--shadow-lg);
+    animation: mcta-in 0.6s 1s var(--ease-out) both;
+  }
+  .mcta a {
+    display: grid;
+    place-items: center;
+    gap: 0.1rem;
+    padding: 0.4rem 0.2rem;
+    border-radius: 999px;
+    color: var(--c-primary-ink);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .mcta .mcta__main {
+    background: var(--c-accent);
+    color: var(--c-dark);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  @keyframes mcta-in {
+    from {
+      translate: 0 150%;
+    }
+  }
+  @media (min-width: 768px) {
+    .mcta {
+      display: none;
+    }
+  }
+</style>

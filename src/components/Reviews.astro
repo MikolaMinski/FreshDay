@@ -1,0 +1,54 @@
+---
+/** Блок отзывов. Рендерится, только если в src/data/reviews.ts есть отзывы. */
+import { reviews } from '@/data/reviews';
+---
+
+{reviews.length > 0 && (
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Отзывы</span>
+        <h2>Что говорят клиенты</h2>
+      </div>
+      <div class="reviews" data-stagger>
+        {reviews.map((r) => (
+          <figure class="review" data-reveal>
+            <blockquote>{r.text}</blockquote>
+            <figcaption>
+              <strong>{r.name}</strong>
+              <span>{r.event}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .reviews {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.5rem;
+  }
+  .review {
+    display: grid;
+    gap: 1.25rem;
+    padding: 2rem;
+    background: var(--c-bg);
+    border-radius: var(--radius);
+  }
+  .review blockquote {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-style: italic;
+  }
+  .review figcaption {
+    display: grid;
+    font-size: var(--fs-sm);
+    color: var(--c-muted);
+  }
+  .review strong {
+    color: var(--c-ink);
+  }
+</style>

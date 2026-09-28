@@ -1,0 +1,278 @@
+---
+import { getCollection } from 'astro:content';
+import { calculator as cfg } from '@/data/calculator';
+
+interface Props {
+  /** id услуги, выбранной по умолчанию */
+  preset?: string;
+}
+const { preset } = Astro.props;
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const options = services.map((s) => ({
+  id: s.id,
+  name: s.data.name,
+  price: s.data.priceFrom,
+  perWaiter: cfg.guestsPerWaiter[s.id] ?? 20,
+}));
+---
+
+<div class="calc" data-calc data-config={JSON.stringify({ options, cfg })}>
+  <fieldset class="calc__field">
+    <legend>Формат мероприятия</legend>
+    <div class="calc__formats">
+      {options.map((o, i) => (
+        <label>
+          <input
+            type="radio"
+            name="calc-format"
+            value={o.id}
+            checked={preset ? o.id === preset : i === 0}
+          />
+          <span>{o.name}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <div class="calc__field">
+    <label for="calc-guests">
+      Количество гостей: <output id="calc-guests-out">{cfg.guests.default}</output>
+    </label>
+    <input
+      id="calc-guests"
+      type="range"
+      min={cfg.guests.min}
+      max={cfg.guests.max}
+      step={cfg.guests.step}
+      value={cfg.guests.default}
+    />
+  </div>
+
+  <div class="calc__field">
+    <label for="calc-hours">
+      Длительность, часов: <output id="calc-hours-out">{cfg.hours.default}</output>
+    </label>
+    <input
+      id="calc-hours"
+      type="range"
+      min={cfg.hours.min}
+      max={cfg.hours.max}
+      step="1"
+      value={cfg.hours.default}
+    />
+  </div>
+
+  <fieldset class="calc__field">
+    <legend>Уровень меню</legend>
+    <div class="calc__formats">
+      {cfg.levels.map((l, i) => (
+        <label>
+          <input
+            type="radio"
+            name="calc-level"
+            value={l.factor}
+            checked={i === 0}
+            data-label={l.label}
+          />
+          <span>{l.label}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <div class="calc__result" aria-live="polite">
+    <p class="calc__label">Ориентировочная стоимость</p>
+    <p class="calc__sum">
+      <span data-sum>—</span> BYN
+    </p>
+    <p class="calc__details" data-details></p>
+    <button type="button" class="btn btn--accent" data-calc-send>
+      Получить точную смету
+    </button>
+  </div>
+</div>
+
+<script>
+  type Opt = { id: string; name: string; price: number; perWaiter: number };
+  const root = document.querySelector<HTMLElement>('[data-calc]');
+  if (root) {
+    const { options, cfg } = JSON.parse(root.dataset.config!) as {
+      options: Opt[];
+      cfg: { waiterRate: number; spread: number };
+    };
+    const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+    const guests = $<HTMLInputElement>('#calc-guests');
+    const hours = $<HTMLInputElement>('#calc-hours');
+    const fmt = (n: number) => Math.round(n / 10) * 10;
+    let summary = '';
+
+    const update = () => {
+      const format = options.find(
+        (o) => o.id === $<HTMLInputElement>('[name=calc-format]:checked').value,
+      )!;
+      const levelInput = $<HTMLInputElement>('[name=calc-level]:checked');
+      const g = Number(guests.value);
+      const h = Number(hours.value);
+      const waiters = Math.max(1, Math.ceil(g / format.perWaiter));
+      const menu = format.price * Number(levelInput.value) * g;
+      const staff = waiters * h * cfg.waiterRate;
+      const total = menu + staff;
+      const from = fmt(total * (1 - cfg.spread / 2));
+      const to = fmt(total * (1 + cfg.spread));
+      $('#calc-guests-out').textContent = String(g);
+      $('#calc-hours-out').textContent = String(h);
+      $('[data-sum]').textContent =
+        `${from.toLocaleString('ru-RU')} – ${to.toLocaleString('ru-RU')}`;
+      $('[data-details]').textContent =
+        `≈ ${Math.round(total / g)} BYN на гостя · официантов: ${waiters}`;
+      summary = `${format.name}, ${g} гостей, ${h} ч, ${levelInput.dataset.label}. Расчёт: ${from}–${to} BYN`;
+      // Прогресс-заливка ползунков
+      [guests, hours].forEach((r) => {
+        const p = ((Number(r.value) - Number(r.min)) / (Number(r.max) - Number(r.min))) * 100;
+        r.style.setProperty('--p', `${p}%`);
+      });
+    };
+    root.addEventListener('input', update);
+    update();
+
+    // Передаём расчёт в форму заявки
+    $('[data-calc-send]').addEventListener('click', () => {
+      const form = document.querySelector<HTMLFormElement>('#zayavka form');
+      if (!form) return;
+      const guestsField = form.elements.namedItem('guests') as HTMLInputElement | null;
+      const comment = form.elements.namedItem('message') as HTMLTextAreaElement | null;
+      if (guestsField) guestsField.value = guests.value;
+      if (comment && !comment.value.includes('Расчёт:'))
+        comment.value = summary + (comment.value ? '\n' + comment.value : '');
+      document.getElementById('zayavka')?.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(
+        () =>
+          (form.elements.namedItem('name') as HTMLInputElement | null)?.focus({
+            preventScroll: true,
+          }),
+        600,
+      );
+    });
+  }
+</script>
+
+<style>
+  .calc {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .calc__field {
+    display: grid;
+    gap: 0.75rem;
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .calc__field legend,
+  .calc__field > label {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .calc__field > label {
+    margin-bottom: 0;
+  }
+  output {
+    color: var(--c-accent);
+    font-family: var(--font-display);
+    font-size: 1.5em;
+    line-height: 1;
+  }
+  .calc__formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .calc__formats label {
+    cursor: pointer;
+  }
+  .calc__formats input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .calc__formats span {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid oklch(100% 0 0 / 0.25);
+    border-radius: 999px;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    transition:
+      background 0.25s,
+      color 0.25s,
+      border-color 0.25s;
+  }
+  .calc__formats label:hover span {
+    border-color: var(--c-accent);
+  }
+  .calc__formats input:checked + span {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-dark);
+  }
+  .calc__formats input:focus-visible + span {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+  }
+  input[type='range'] {
+    --p: 50%;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--c-accent) var(--p), oklch(100% 0 0 / 0.2) var(--p));
+    cursor: pointer;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--c-primary-ink);
+    border: 4px solid var(--c-accent);
+    box-shadow: var(--shadow);
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--c-primary-ink);
+    border: 4px solid var(--c-accent);
+  }
+  .calc__result {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: oklch(100% 0 0 / 0.06);
+    border: 1px solid oklch(100% 0 0 / 0.12);
+  }
+  .calc__label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .calc__sum {
+    font-family: var(--font-display);
+    font-size: var(--fs-2xl);
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .calc__details {
+    font-size: var(--fs-sm);
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+  }
+  .calc__result .btn {
+    justify-self: start;
+  }
+</style>

@@ -1,0 +1,10 @@
+dist/
+.astro/
+node_modules/
+.env
+.env.*
+!.env.example
+public/api/config.php
+.DS_Store
+npm-debug.log*
+public/api/leads.log

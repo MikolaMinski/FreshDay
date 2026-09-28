@@ -4,9 +4,9 @@
  * адрес, телефон, часы работы, цены, вопросы-ответы, хлебные крошки.
  */
 import { SITE } from '@/config/site';
+import { absUrl as abs, siteUrl } from '@/lib/url';
 
-const abs = (path: string) => new URL(path, SITE.url).href;
-const orgId = `${SITE.url}/#organization`;
+const orgId = `${siteUrl}/#organization`;
 
 export function organizationSchema(logo?: string) {
   const { contacts } = SITE;
@@ -18,7 +18,7 @@ export function organizationSchema(logo?: string) {
     alternateName: SITE.alternateName,
     legalName: SITE.legalName,
     description: SITE.defaultDescription,
-    url: SITE.url + '/',
+    url: abs('/'),
     logo: logo ? abs(logo) : undefined,
     image: abs('/og-image.jpg'),
     telephone: contacts.phoneHref,
@@ -46,8 +46,8 @@ export function websiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${SITE.url}/#website`,
-    url: SITE.url + '/',
+    '@id': `${siteUrl}/#website`,
+    url: abs('/'),
     name: SITE.name,
     alternateName: SITE.alternateName,
     inLanguage: SITE.lang,

@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
@@ -12,7 +13,7 @@ const { data } = service;
 ---
 
 <article class="card" data-reveal>
-  <a href={`/uslugi/${service.id}/`} class="card__link">
+  <a href={url(`/uslugi/${service.id}/`)} class="card__link">
     <div class="card__media">
       <Image
         src={data.cover}

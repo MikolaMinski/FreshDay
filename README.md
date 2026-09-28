@@ -112,7 +112,52 @@ npm run preview    # посмотреть собранную версию
 
 ---
 
-## Публикация на хостинге
+## Публикация на GitHub Pages (бесплатно)
+
+В проекте уже есть автодеплой: `.github/workflows/deploy.yml`. После настройки каждый `git push`
+в ветку `main` сам собирает и публикует сайт примерно за 2 минуты.
+
+1. Создайте на GitHub новый репозиторий (например, `catering-minsk`). Он должен быть **публичным**
+   (на бесплатном тарифе GitHub Pages работает только с публичными).
+2. Отправьте проект в репозиторий (в терминале VS Code, из папки проекта):
+   ```bash
+   git remote add origin https://github.com/<ваш-логин>/catering-minsk.git
+   git push -u origin main
+   ```
+   Или в VS Code: вкладка **Source Control** → **Publish Branch**.
+3. На GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+4. Откройте вкладку **Actions**. Если сборка упала (первый запуск иногда стартует раньше шага 3),
+   нажмите **Re-run all jobs**. Когда станет зелёной, сайт откроется по адресу
+   `https://<ваш-логин>.github.io/catering-minsk/`.
+
+Адрес и префикс `/catering-minsk/` в ссылках подставляются автоматически, код менять не нужно.
+Внутренние ссылки в `.astro`-файлах пишите через `url('/путь/')` из `src/lib/url.ts`, а в статьях —
+относительными (`../../galereya/`), тогда они работают и с префиксом, и без.
+
+### Свой домен (например, freshday.by)
+
+1. **Settings → Pages → Custom domain** → впишите `freshday.by` → Save.
+2. У регистратора домена создайте DNS-записи (GitHub покажет их в той же настройке):
+   четыре `A`-записи для `freshday.by` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+   `185.199.111.153` и `CNAME` для `www` → `<ваш-логин>.github.io`.
+3. **Settings → Secrets and variables → Actions → Variables → New repository variable**:
+   `CUSTOM_DOMAIN` = `freshday.by`. Перезапустите деплой: вкладка **Actions** → **Run workflow**.
+4. Когда сертификат выпустится (от нескольких минут до суток), включите **Enforce HTTPS**.
+
+### Форма заявки на GitHub Pages
+
+GitHub Pages отдаёт только статические файлы: PHP там не работает, поэтому `lead.php` не
+сработает. Используйте бесплатный [Web3Forms](https://web3forms.com): укажите email, получите
+Access Key и добавьте его переменной репозитория `PUBLIC_WEB3FORMS_KEY` (там же, где
+`CUSTOM_DOMAIN`). Затем перезапустите деплой, и заявки начнут приходить на почту. Ключ
+публичный по задумке сервиса, его можно хранить в переменных, а не в секретах.
+
+Так же через переменные задаются `PUBLIC_YANDEX_METRIKA_ID`, `PUBLIC_GA_ID`,
+`PUBLIC_YANDEX_VERIFICATION` и `PUBLIC_GOOGLE_VERIFICATION`.
+
+---
+
+## Публикация на обычном хостинге
 
 **Обычный хостинг (hoster.by, active.by и др.):**
 

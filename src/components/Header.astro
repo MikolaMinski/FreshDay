@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import { getCollection } from 'astro:content';
 import { SITE } from '@/config/site';
 import Icon from './Icon.astro';
@@ -13,12 +14,13 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
   (a, b) => a.data.order - b.data.order,
 );
 const path = Astro.url.pathname;
-const isActive = (href: string) => href !== '/' && !href.includes('#') && path.startsWith(href);
+const isActive = (href: string) =>
+  href !== '/' && !href.includes('#') && path.startsWith(url(href));
 ---
 
 <header class:list={['header', { 'header--overlay': overlay }]} data-header>
   <div class="container header__inner">
-    <a href="/" class="header__logo" aria-label={`${SITE.name} — на главную`}>
+    <a href={url('/')} class="header__logo" aria-label={`${SITE.name} — на главную`}>
       <Logo />
     </a>
 
@@ -26,14 +28,14 @@ const isActive = (href: string) => href !== '/' && !href.includes('#') && path.s
       <ul>
         {SITE.nav.map((item) => (
           <li class:list={{ 'has-sub': item.href === '/uslugi/' }}>
-            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+            <a href={url(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
             {item.href === '/uslugi/' && (
               <ul class="sub">
                 {services.map((s) => (
                   <li>
-                    <a href={`/uslugi/${s.id}/`}>
+                    <a href={url(`/uslugi/${s.id}/`)}>
                       <Icon name={s.data.icon} size={18} />
                       {s.data.name}
                     </a>
@@ -84,7 +86,7 @@ const isActive = (href: string) => href !== '/' && !href.includes('#') && path.s
       <ul>
         {SITE.nav.map((item) => (
           <li>
-            <a href={item.href}>{item.label}</a>
+            <a href={url(item.href)}>{item.label}</a>
           </li>
         ))}
       </ul>
@@ -92,7 +94,7 @@ const isActive = (href: string) => href !== '/' && !href.includes('#') && path.s
       <ul class="mobile-menu__services">
         {services.map((s) => (
           <li>
-            <a href={`/uslugi/${s.id}/`}>{s.data.name}</a>
+            <a href={url(`/uslugi/${s.id}/`)}>{s.data.name}</a>
           </li>
         ))}
       </ul>

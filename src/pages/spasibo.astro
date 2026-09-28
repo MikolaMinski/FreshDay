@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { SITE } from '@/config/site';
 ---
@@ -9,7 +10,7 @@ import { SITE } from '@/config/site';
       <p class="eyebrow">Готово</p>
       <h1>Спасибо, заявка отправлена!</h1>
       <p>Перезвоним в течение 15 минут в рабочее время ({SITE.contacts.hours.toLowerCase()}).</p>
-      <a href="/" class="btn">
+      <a href={url('/')} class="btn">
         На главную
       </a>
     </div>

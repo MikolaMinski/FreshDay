@@ -70,7 +70,12 @@ export const SITE = {
   priceRange: '15–120 BYN за гостя',
   currency: 'BYN',
 
-  /** Адрес обработчика формы заявки (см. README → «Форма заявки») */
+  /**
+   * Обработчик формы заявки (см. README → «Форма заявки»):
+   *  - обычный хостинг с PHP → '/api/lead.php' (заявки в Telegram);
+   *  - GitHub Pages и другой хостинг без PHP → задайте ключ PUBLIC_WEB3FORMS_KEY,
+   *    тогда заявки пойдут через web3forms.com на ваш email, это поле игнорируется.
+   */
   formEndpoint: '/api/lead.php',
 
   /** Навигация */

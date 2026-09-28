@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import { Image } from 'astro:assets';
 import { SITE } from '@/config/site';
 import { photo } from '@/data/gallery';
@@ -36,7 +37,7 @@ const words = ['Кейтеринг', 'в Минске'];
         <a href="#zayavka" class="btn btn--accent">
           Получить смету за 15 минут <Icon name="arrow" />
         </a>
-        <a href="/uslugi/" class="btn btn--ghost">
+        <a href={url('/uslugi/')} class="btn btn--ghost">
           Услуги и цены
         </a>
       </div>

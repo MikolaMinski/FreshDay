@@ -1,4 +1,6 @@
 ---
+import { url } from '@/lib/url';
+
 interface Props {
   items: { name: string; href: string }[];
 }
@@ -10,7 +12,7 @@ const { items } = Astro.props;
     {items.map((item, i) => (
       <li>
         {i < items.length - 1 ? (
-          <a href={item.href}>{item.name}</a>
+          <a href={url(item.href)}>{item.name}</a>
         ) : (
           <span aria-current="page">{item.name}</span>
         )}

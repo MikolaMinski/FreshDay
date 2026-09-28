@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import Stats from '@/components/Stats.astro';
@@ -47,7 +48,7 @@ const preview = gallery.slice(0, 8);
           <h2>Реальные мероприятия — без фотобанков</h2>
           <p>Банкеты в усадьбах, фуршеты в офисах, свадьбы у воды и в лофтах Минска.</p>
         </div>
-        <a href="/galereya/" class="btn btn--ghost">
+        <a href={url('/galereya/')} class="btn btn--ghost">
           Вся галерея <Icon name="arrow" />
         </a>
       </div>

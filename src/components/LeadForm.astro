@@ -4,6 +4,7 @@
  * а с JS — отправляется в фоне и показывает результат на месте.
  * Куда уходят заявки — настраивается в public/api/config.php (см. README).
  */
+import { url, absUrl } from '@/lib/url';
 import { getCollection } from 'astro:content';
 import { SITE } from '@/config/site';
 import Icon from './Icon.astro';
@@ -13,12 +14,16 @@ interface Props {
   preset?: string;
 }
 const { preset } = Astro.props;
+
+// Web3Forms — для хостинга без PHP (GitHub Pages). Ключ публичный по задумке сервиса.
+const web3Key = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+const action = web3Key ? 'https://api.web3forms.com/submit' : url(SITE.formEndpoint);
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
 ---
 
-<form class="form" action={SITE.formEndpoint} method="post" data-lead-form novalidate>
+<form class="form" action={action} method="post" data-lead-form novalidate>
   <div class="form__row">
     <label class="field">
       <span>Ваше имя *</span>
@@ -81,12 +86,21 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
     Сайт <input name="website" type="text" tabindex="-1" autocomplete="off" />
   </label>
   <input type="hidden" name="page" value={Astro.url.pathname} />
+  {web3Key && (
+    <>
+      <input type="hidden" name="access_key" value={web3Key} />
+      <input type="hidden" name="subject" value={`Заявка с сайта ${SITE.name}`} />
+      <input type="hidden" name="from_name" value={SITE.name} />
+      <input type="hidden" name="redirect" value={absUrl('/spasibo/')} />
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" />
+    </>
+  )}
 
   <label class="consent">
     <input type="checkbox" name="consent" value="yes" required />
     <span>
       Согласен(на) на обработку персональных данных в соответствии с
-      <a href="/politika-konfidencialnosti/" target="_blank">
+      <a href={url('/politika-konfidencialnosti/')} target="_blank">
         политикой конфиденциальности
       </a>
     </span>
@@ -131,7 +145,8 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
           headers: { Accept: 'application/json' },
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.ok === false) throw new Error(data.error || res.statusText);
+        if (!res.ok || data.ok === false || data.success === false)
+          throw new Error(data.error || res.statusText);
         form.reset();
         form.classList.remove('was-validated');
         status.dataset.state = 'success';

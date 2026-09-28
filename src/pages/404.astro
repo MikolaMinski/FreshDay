@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
@@ -9,10 +10,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       <h1>Такого блюда нет в меню</h1>
       <p>Страница была удалена или переехала. Загляните на главную или в раздел услуг.</p>
       <div class="nf__actions">
-        <a href="/" class="btn">
+        <a href={url('/')} class="btn">
           На главную
         </a>
-        <a href="/uslugi/" class="btn btn--ghost">
+        <a href={url('/uslugi/')} class="btn btn--ghost">
           Услуги
         </a>
       </div>

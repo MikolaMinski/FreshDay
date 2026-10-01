@@ -1,7 +1,6 @@
 ---
 import { url } from '@/lib/url';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { SITE } from '@/config/site';
 ---
 
 <BaseLayout title="Заявка отправлена" noindex>
@@ -9,7 +8,7 @@ import { SITE } from '@/config/site';
     <div class="container thanks">
       <p class="eyebrow">Готово</p>
       <h1>Спасибо, заявка отправлена!</h1>
-      <p>Перезвоним в течение 15 минут в рабочее время ({SITE.contacts.hours.toLowerCase()}).</p>
+      <p>Ответим в течение суток.</p>
       <a href={url('/')} class="btn">
         На главную
       </a>

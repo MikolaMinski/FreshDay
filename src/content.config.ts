@@ -27,13 +27,10 @@ const services = defineCollection({
       icon: z.enum(['glass', 'table', 'cup', 'rings', 'briefcase', 'tree']),
       priceFrom: z.number().positive(),
       priceUnit: z.string().default('за гостя'),
-      minGuests: z.number().int().positive(),
       cover: image(),
       coverAlt: z.string(),
       /** Категория галереи, фото из которой покажутся на странице услуги */
       galleryCategory: z.string(),
-      highlights: z.array(z.string()).min(3),
-      menu: z.array(z.object({ title: z.string(), items: z.array(z.string()) })).default([]),
       faq: z.array(faqItem).default([]),
       /** Не показывать страницу, пока услуга в работе */
       draft: z.boolean().default(false),

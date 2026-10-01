@@ -30,28 +30,17 @@ const words = ['Кейтеринг', 'в Минске'];
         </em>
       </h1>
       <p class="hero__lead hero__in" style="--d: 4">
-        Готовим на своей кухне, привозим посуду и мебель, сервируем и обслуживаем гостей — от
+        Готовим на своей кухне, привозим посуду, сервируем и обслуживаем гостей — от
         уютного ужина на 10 человек до свадьбы на 300. Вы просто наслаждаетесь праздником.
       </p>
       <div class="hero__actions hero__in" style="--d: 5">
         <a href="#zayavka" class="btn btn--accent">
-          Получить смету за 15 минут <Icon name="arrow" />
+          Оставить заявку <Icon name="arrow" />
         </a>
         <a href={url('/uslugi/')} class="btn btn--ghost">
           Услуги и цены
         </a>
       </div>
-      <ul class="hero__chips hero__in" style="--d: 6">
-        <li>
-          <Icon name="check" size={16} /> заказ за {SITE.stats[3]?.value} часа
-        </li>
-        <li>
-          <Icon name="check" size={16} /> от 15 BYN за гостя
-        </li>
-        <li>
-          <Icon name="check" size={16} /> выезд до 60 км от МКАД
-        </li>
-      </ul>
     </div>
 
     <div class="hero__collage" aria-hidden="false">
@@ -123,24 +112,6 @@ const words = ['Кейтеринг', 'в Минске'];
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 2.25rem;
-  }
-  .hero__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    margin-top: 2rem;
-    padding: 0;
-    list-style: none;
-    font-size: var(--fs-sm);
-    color: oklch(85% 0.02 150);
-  }
-  .hero__chips li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .hero__chips svg {
-    color: var(--c-accent);
   }
 
   /* Появление при загрузке */

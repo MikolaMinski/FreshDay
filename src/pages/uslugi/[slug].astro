@@ -63,9 +63,6 @@ const schema = [
       <span>
         <strong>от {data.priceFrom} BYN</strong> {data.priceUnit}
       </span>
-      <span>
-        <strong>от {data.minGuests}</strong> гостей
-      </span>
     </div>
     <div class="actions">
       <a href="#zayavka" class="btn btn--accent">
@@ -79,48 +76,8 @@ const schema = [
       <article class="prose">
         <Content />
       </article>
-      <aside class="aside">
-        <div class="aside__card" data-reveal>
-          <p class="eyebrow">Что входит</p>
-          <ul>
-            {data.highlights.map((h) => (
-              <li>
-                <Icon name="check" size={18} />
-                {h}
-              </li>
-            ))}
-          </ul>
-          <a href="#zayavka" class="btn">
-            Получить смету
-          </a>
-        </div>
-      </aside>
     </div>
   </section>
-
-  {data.menu.length > 0 && (
-    <section class="section section--tint">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">Пример меню</span>
-          <h2>Что можно заказать</h2>
-          <p>Это лишь пример — финальное меню собираем под ваш вкус, бюджет и количество гостей.</p>
-        </div>
-        <div class="menu" data-stagger>
-          {data.menu.map((group) => (
-            <div class="menu__group" data-reveal>
-              <h3>{group.title}</h3>
-              <ul>
-                {group.items.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
 
   {photos.length > 0 && (
     <section class="section">
@@ -167,74 +124,6 @@ const schema = [
     margin-top: 0.5rem;
   }
   .layout {
-    display: grid;
-    grid-template-columns: 1fr 22rem;
-    gap: clamp(2rem, 1rem + 4vw, 5rem);
-    align-items: start;
-  }
-  .aside {
-    position: sticky;
-    top: 6rem;
-  }
-  .aside__card {
-    display: grid;
-    gap: 1.25rem;
-    padding: 2rem;
-    background: var(--c-surface);
-    border: 1px solid var(--c-line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-  .aside__card ul {
-    display: grid;
-    gap: 0.8rem;
-    list-style: none;
-    padding: 0;
-    font-size: var(--fs-sm);
-  }
-  .aside__card li {
-    display: flex;
-    gap: 0.6rem;
-  }
-  .aside__card li :global(svg) {
-    flex-shrink: 0;
-    margin-top: 0.2rem;
-    color: var(--c-accent);
-  }
-  .menu {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: 1.5rem;
-  }
-  .menu__group {
-    padding: 2rem;
-    background: var(--c-bg);
-    border-radius: var(--radius);
-  }
-  .menu__group h3 {
-    font-size: var(--fs-xl);
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dashed var(--c-line);
-  }
-  .menu__group ul {
-    display: grid;
-    gap: 0.6rem;
-    list-style: none;
-    padding: 0;
-  }
-  .menu__group li::before {
-    content: '✦';
-    margin-right: 0.6rem;
-    color: var(--c-accent);
-    font-size: 0.7em;
-  }
-  @media (max-width: 960px) {
-    .layout {
-      grid-template-columns: 1fr;
-    }
-    .aside {
-      position: static;
-    }
+    max-width: 50rem;
   }
 </style>

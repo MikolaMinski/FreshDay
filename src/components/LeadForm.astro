@@ -151,7 +151,7 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
         form.classList.remove('was-validated');
         status.dataset.state = 'success';
         status.textContent =
-          'Спасибо! Заявка отправлена — перезвоним в течение 15 минут в рабочее время.';
+          'Спасибо! Заявка отправлена — ответим в течение суток.';
         // Цель для аналитики
         const id = import.meta.env.PUBLIC_YANDEX_METRIKA_ID;
         if (id && window.ym) window.ym(id, 'reachGoal', 'lead');

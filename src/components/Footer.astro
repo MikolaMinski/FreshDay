@@ -70,6 +70,12 @@ const year = new Date().getFullYear();
         <Icon name="phone" size={18} />
         {contacts.phone}
       </a>
+      {contacts.phone2 && (
+        <a href={`tel:${contacts.phone2Href}`}>
+          <Icon name="phone" size={18} />
+          {contacts.phone2}
+        </a>
+      )}
       <a href={`mailto:${contacts.email}`}>
         <Icon name="mail" size={18} />
         {contacts.email}

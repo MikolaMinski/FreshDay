@@ -21,7 +21,7 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lng}%2C${lat}&z=15&pt=${ln
 >
   <PageHero
     title="Контакты"
-    lead="Ответим на вопросы, подберём меню и рассчитаем смету — ответим в течение суток."
+    lead="Ответим на вопросы, подберём меню и рассчитаем смету в течение суток."
     crumbs={crumbs}
   />
 
@@ -35,6 +35,15 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lng}%2C${lat}&z=15&pt=${ln
             {contacts.phone}
           </span>
         </a>
+        {contacts.phone2 && (
+          <a class="info__item" href={`tel:${contacts.phone2Href}`}>
+            <Icon name="phone" />
+            <span>
+              <small>Дополнительный телефон</small>
+              {contacts.phone2}
+            </span>
+          </a>
+        )}
         <a class="info__item" href={contacts.telegram} target="_blank" rel="noopener">
           <Icon name="telegram" />
           <span>

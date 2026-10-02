@@ -50,20 +50,6 @@ const options = services.map((s) => ({
     />
   </div>
 
-  <div class="calc__field">
-    <label for="calc-hours">
-      Длительность, часов: <output id="calc-hours-out">{cfg.hours.default}</output>
-    </label>
-    <input
-      id="calc-hours"
-      type="range"
-      min={cfg.hours.min}
-      max={cfg.hours.max}
-      step="1"
-      value={cfg.hours.default}
-    />
-  </div>
-
   <fieldset class="calc__field">
     <legend>Уровень меню</legend>
     <div class="calc__formats">
@@ -100,11 +86,10 @@ const options = services.map((s) => ({
   if (root) {
     const { options, cfg } = JSON.parse(root.dataset.config!) as {
       options: Opt[];
-      cfg: { waiterRate: number; spread: number };
+      cfg: { waiterRate: number; spread: number; hours: { default: number } };
     };
     const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
     const guests = $<HTMLInputElement>('#calc-guests');
-    const hours = $<HTMLInputElement>('#calc-hours');
     const fmt = (n: number) => Math.round(n / 10) * 10;
     let summary = '';
 
@@ -114,7 +99,8 @@ const options = services.map((s) => ({
       )!;
       const levelInput = $<HTMLInputElement>('[name=calc-level]:checked');
       const g = Number(guests.value);
-      const h = Number(hours.value);
+      // Длительность в калькуляторе не выбирается — берём типовую из настроек
+      const h = cfg.hours.default;
       const waiters = Math.max(1, Math.ceil(g / format.perWaiter));
       const menu = format.price * Number(levelInput.value) * g;
       const staff = waiters * h * cfg.waiterRate;
@@ -122,14 +108,13 @@ const options = services.map((s) => ({
       const from = fmt(total * (1 - cfg.spread / 2));
       const to = fmt(total * (1 + cfg.spread));
       $('#calc-guests-out').textContent = String(g);
-      $('#calc-hours-out').textContent = String(h);
       $('[data-sum]').textContent =
         `${from.toLocaleString('ru-RU')} – ${to.toLocaleString('ru-RU')}`;
       $('[data-details]').textContent =
         `≈ ${Math.round(total / g)} BYN на гостя · официантов: ${waiters}`;
-      summary = `${format.name}, ${g} гостей, ${h} ч, ${levelInput.dataset.label}. Расчёт: ${from}–${to} BYN`;
+      summary = `${format.name}, ${g} гостей, ${levelInput.dataset.label}. Расчёт: ${from}–${to} BYN`;
       // Прогресс-заливка ползунков
-      [guests, hours].forEach((r) => {
+      [guests].forEach((r) => {
         const p = ((Number(r.value) - Number(r.min)) / (Number(r.max) - Number(r.min))) * 100;
         r.style.setProperty('--p', `${p}%`);
       });

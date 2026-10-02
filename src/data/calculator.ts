@@ -4,7 +4,8 @@
  */
 export const calculator = {
   guests: { min: 10, max: 300, step: 5, default: 40 },
-  hours: { min: 2, max: 8, default: 4 },
+  /** Типовая длительность мероприятия для расчёта работы официантов (в калькуляторе не показывается) */
+  hours: { default: 4 },
   levels: [
     { id: 'standard', label: 'Стандарт', factor: 1 },
     { id: 'premium', label: 'Премиум', factor: 1.45 },

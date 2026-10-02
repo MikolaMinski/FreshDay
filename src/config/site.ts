@@ -27,6 +27,9 @@ export const SITE = {
   contacts: {
     phone: '+375 29 000-00-00', // TODO
     phoneHref: '+375290000000', // TODO: тот же номер без пробелов
+    /** Дополнительный номер. Оставьте phone2: '' чтобы скрыть */
+    phone2: '+375 29 111-11-11', // TODO: дополнительный номер
+    phone2Href: '+375291111111', // TODO: тот же номер без пробелов
     email: 'hello@freshday.by', // TODO
     telegram: 'https://t.me/freshday_by', // TODO
     viber: 'viber://chat?number=%2B375290000000', // TODO

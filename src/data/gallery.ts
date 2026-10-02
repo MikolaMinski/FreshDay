@@ -35,11 +35,6 @@ const photos: Photo[] = [
     category: 'furshet',
   },
   {
-    file: 'svadba-zal-zelenye-skaterti',
-    alt: 'Свадебный зал с зелёными бархатными скатертями и цветочной аркой',
-    category: 'svadba',
-  },
-  {
     file: 'vyezdnoj-banket-v-lesu',
     alt: 'Банкет в деревянной беседке в сосновом лесу',
     category: 'vyezdnoj',
@@ -76,11 +71,6 @@ const photos: Photo[] = [
     category: 'banket',
   },
   {
-    file: 'furshet-v-shourume',
-    alt: 'Фуршет на открытии шоурума с игристым и канапе',
-    category: 'furshet',
-  },
-  {
     file: 'servirovka-derevyannyj-stol',
     alt: 'Вечерняя сервировка деревянного стола на террасе',
     category: 'svadba',
@@ -105,7 +95,6 @@ const photos: Photo[] = [
     alt: 'Сервировка длинного стола в лофте с видом на сад',
     category: 'svadba',
   },
-  { file: 'furshet-otkrytie-ofisa', alt: 'Фуршет на открытии офиса банка', category: 'kofe-breik' },
   {
     file: 'banket-steklyannyj-stol',
     alt: 'Круглый стеклянный стол с закусками и золотыми приборами',
@@ -156,6 +145,46 @@ const photos: Photo[] = [
     file: 'blyudo-steik-gribnoj-sous',
     alt: 'Стейк из говядины с грибным соусом и драником',
     category: 'banket',
+  },
+  {
+    file: 'servirovka-veranda-zelen',
+    alt: 'Длинный сервированный стол на веранде с живой зеленью под потолком',
+    category: 'svadba',
+  },
+  {
+    file: 'banket-veranda-salfetki',
+    alt: 'Банкетный стол на веранде с белыми салфетками и прозрачными стульями',
+    category: 'banket',
+  },
+  {
+    file: 'korporativ-loft-servirovka',
+    alt: 'Сервировка корпоративного банкета в лофте',
+    category: 'korporativ',
+  },
+  {
+    file: 'vyezdnoj-stol-na-trave',
+    alt: 'Стол с закусками и напитками на лужайке за городом',
+    category: 'vyezdnoj',
+  },
+  {
+    file: 'svadba-dlinnyj-stol-loft',
+    alt: 'Длинный свадебный стол с закусками и прозрачными стульями',
+    category: 'svadba',
+  },
+  {
+    file: 'banket-loft-vid-na-sad',
+    alt: 'Банкетный стол у панорамных окон с видом на сад',
+    category: 'banket',
+  },
+  {
+    file: 'banket-krasnye-salfetki',
+    alt: 'Банкет с белыми скатертями, бордовыми салфетками и канделябрами',
+    category: 'banket',
+  },
+  {
+    file: 'furshet-zakuski-na-doskah',
+    alt: 'Фуршетные закуски и фруктовые шпажки на деревянных досках',
+    category: 'furshet',
   },
 ];
 

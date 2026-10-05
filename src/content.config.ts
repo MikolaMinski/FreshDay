@@ -24,7 +24,7 @@ const services = defineCollection({
       /** Короткий анонс для карточки на главной */
       excerpt: z.string(),
       order: z.number().default(100),
-      icon: z.enum(['glass', 'table', 'cup', 'rings', 'briefcase', 'tree']),
+      icon: z.enum(['glass', 'table', 'cup', 'rings', 'briefcase', 'tree', 'cake']),
       priceFrom: z.number().positive(),
       priceUnit: z.string().default('за гостя'),
       cover: image(),

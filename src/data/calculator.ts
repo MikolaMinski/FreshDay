@@ -20,6 +20,7 @@ export const calculator = {
     svadba: 12,
     korporativ: 20,
     'vyezdnoj-keytering': 15,
+    'den-rozhdeniya': 20,
   } as Record<string, number>,
   /** Разброс вилки цены, чтобы не обещать точную сумму до сметы */
   spread: 0.15,

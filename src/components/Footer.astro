@@ -82,7 +82,7 @@ const year = new Date().getFullYear();
       </a>
       <span>
         <Icon name="pin" size={18} />
-        г. {contacts.address.locality}, {contacts.address.street}
+        {contacts.address.locality}, {contacts.address.street}, {contacts.address.district}
       </span>
       <span>
         <Icon name="clock" size={18} />
@@ -93,7 +93,7 @@ const year = new Date().getFullYear();
 
   <div class="container footer__bottom">
     <span>
-      © {year} {SITE.name}. {SITE.legalName}
+      © {year} {SITE.name}. {SITE.legalName}, УНП {SITE.unp}
     </span>
     <span>Работаем в Минске и по всей Беларуси</span>
   </div>

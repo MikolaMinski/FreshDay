@@ -13,7 +13,9 @@ export const SITE = {
   /** Написание кириллицей — люди ищут и так, и так */
   alternateName: 'Фреш Дэй',
   /** Юридическое название — выводится в подвале (требование законодательства РБ) */
-  legalName: 'ООО «…», УНП 000000000', // TODO: юрлицо и УНП
+  legalName: 'ООО «ФИТБЭК»',
+  /** УНП — выводится в подвале рядом с юрлицом */
+  unp: '692031496',
   tagline: 'Кейтеринг в Минске',
   city: 'Минск',
   locale: 'ru_BY',
@@ -25,24 +27,25 @@ export const SITE = {
     'Выездной кейтеринг в Минске и по всей Беларуси: фуршеты, банкеты, свадьбы, корпоративы и кофе-брейки под ключ. Своя кухня, посуда, официанты.',
 
   contacts: {
-    phone: '+375 29 000-00-00', // TODO
-    phoneHref: '+375290000000', // TODO: тот же номер без пробелов
+    phone: '+375 29 686-66-92',
+    phoneHref: '+375296866692',
     /** Дополнительный номер. Оставьте phone2: '' чтобы скрыть */
-    phone2: '+375 29 111-11-11', // TODO: дополнительный номер
-    phone2Href: '+375291111111', // TODO: тот же номер без пробелов
+    phone2: '+375 29 170-34-73',
+    phone2Href: '+375291703473',
     email: 'hello@freshday.by', // TODO
-    telegram: 'https://t.me/freshday_by', // TODO
-    viber: 'viber://chat?number=%2B375290000000', // TODO
+    telegram: 'https://t.me/Vovan131313',
+    viber: 'viber://chat?number=%2B375296866692',
     instagram: 'https://instagram.com/freshday.by', // TODO
     address: {
-      street: 'ул. Примерная, 1', // TODO: адрес кухни/офиса
-      locality: 'Минск',
+      street: 'ул. Дзержинская, 26А',
+      locality: 'аг. Озеро',
+      district: 'Узденский район',
       region: 'Минская область',
-      postalCode: '220000', // TODO
+      postalCode: '223417',
       country: 'BY',
     },
     /** Координаты для карты и Schema.org */
-    geo: { lat: 53.9023, lng: 27.5619 }, // TODO
+    geo: { lat: 53.6304, lng: 27.454 }, // центр аг. Озеро — при желании уточните по карте
     hours: 'Ежедневно 9:00–21:00',
     /** Формат Schema.org: https://schema.org/openingHours */
     hoursSchema: 'Mo-Su 09:00-21:00',

@@ -56,13 +56,15 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lng}%2C${lat}&z=15&pt=${ln
             <small>Viber</small>Написать в Viber
           </span>
         </a>
-        <a class="info__item" href={`mailto:${contacts.email}`}>
-          <Icon name="mail" />
-          <span>
-            <small>Email</small>
-            {contacts.email}
-          </span>
-        </a>
+        {contacts.email && (
+          <a class="info__item" href={`mailto:${contacts.email}`}>
+            <Icon name="mail" />
+            <span>
+              <small>Email</small>
+              {contacts.email}
+            </span>
+          </a>
+        )}
         <div class="info__item">
           <Icon name="pin" />
           <span>

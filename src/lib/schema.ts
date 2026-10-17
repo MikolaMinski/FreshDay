@@ -23,7 +23,7 @@ export function organizationSchema(logo?: string) {
     logo: logo ? abs(logo) : undefined,
     image: abs('/og-image.jpg'),
     telephone: contacts.phoneHref,
-    email: contacts.email,
+    email: contacts.email || undefined,
     priceRange: SITE.priceRange,
     currenciesAccepted: SITE.currency,
     paymentAccepted: 'Наличные, банковская карта, безналичный расчёт',

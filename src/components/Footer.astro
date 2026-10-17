@@ -29,9 +29,11 @@ const year = new Date().getFullYear();
         <a href={contacts.viber} aria-label="Viber">
           <Icon name="viber" />
         </a>
-        <a href={contacts.instagram} target="_blank" rel="noopener" aria-label="Instagram">
-          <Icon name="instagram" />
-        </a>
+        {contacts.instagram && (
+          <a href={contacts.instagram} target="_blank" rel="noopener" aria-label="Instagram">
+            <Icon name="instagram" />
+          </a>
+        )}
       </div>
     </div>
 
@@ -76,10 +78,12 @@ const year = new Date().getFullYear();
           {contacts.phone2}
         </a>
       )}
-      <a href={`mailto:${contacts.email}`}>
-        <Icon name="mail" size={18} />
-        {contacts.email}
-      </a>
+      {contacts.email && (
+        <a href={`mailto:${contacts.email}`}>
+          <Icon name="mail" size={18} />
+          {contacts.email}
+        </a>
+      )}
       <span>
         <Icon name="pin" size={18} />
         {contacts.address.locality}, {contacts.address.street}, {contacts.address.district}

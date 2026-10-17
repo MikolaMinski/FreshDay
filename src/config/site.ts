@@ -32,10 +32,11 @@ export const SITE = {
     /** Дополнительный номер. Оставьте phone2: '' чтобы скрыть */
     phone2: '+375 29 170-34-73',
     phone2Href: '+375291703473',
-    email: 'hello@freshday.by', // TODO
+    /** Email и Instagram: пустая строка — не показывать на сайте */
+    email: '',
     telegram: 'https://t.me/Vovan131313',
     viber: 'viber://chat?number=%2B375296866692',
-    instagram: 'https://instagram.com/freshday.by', // TODO
+    instagram: '',
     address: {
       street: 'ул. Дзержинская, 26А',
       locality: 'аг. Озеро',

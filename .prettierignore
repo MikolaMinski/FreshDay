@@ -3,3 +3,4 @@ node_modules
 .astro
 public/api
 package-lock.json
+server/

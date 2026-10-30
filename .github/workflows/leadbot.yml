@@ -1,0 +1,32 @@
+# Проверка сервиса заявок (.NET 10): сборка и тесты при изменениях в папке server/.
+name: Lead bot (.NET)
+
+on:
+  push:
+    branches: [main]
+    paths: ['server/**', '.github/workflows/leadbot.yml']
+  pull_request:
+    paths: ['server/**', '.github/workflows/leadbot.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: server/global.json
+
+      - name: Тесты
+        run: dotnet test FreshDay.Server.slnx -c Release
+
+      - name: Сборка Docker-образа
+        run: docker build -t freshday-leadbot .

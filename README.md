@@ -93,6 +93,19 @@ npm run preview    # посмотреть собранную версию
 
 ## Форма заявки
 
+Куда уходят заявки, зависит от переменных при сборке (по приоритету):
+
+| Переменная             | Куда                                             | Где описано        |
+| ---------------------- | ------------------------------------------------ | ------------------ |
+| `PUBLIC_LEAD_API_URL`  | сервис на .NET 10 (`server/`) → группа Telegram  | `server/README.md` |
+| `PUBLIC_WEB3FORMS_KEY` | web3forms.com → email                            | ниже               |
+| ничего не задано       | `public/api/lead.php` на PHP-хостинге → Telegram | ниже               |
+
+Для GitHub Pages переменные задаются в **Settings → Secrets and variables → Actions →
+Variables**, локально — в файле `.env`.
+
+### PHP-хостинг
+
 Заявки отправляет `public/api/lead.php` (PHP 8+, есть на любом виртуальном хостинге в Беларуси).
 
 1. Создайте бота в Telegram через [@BotFather](https://t.me/BotFather), сохраните токен.
@@ -107,8 +120,8 @@ npm run preview    # посмотреть собранную версию
 Защита от спама: скрытое поле-ловушка, проверка данных на сервере, ограничение частоты отправки.
 Без JavaScript форма тоже работает — после отправки открывается страница `/spasibo/`.
 
-> Если сайт будет на хостинге без PHP (Netlify, Vercel, Cloudflare Pages), поменяйте
-> `formEndpoint` в `src/config/site.ts` на адрес сервиса форм (Formspree, Web3Forms и т.п.).
+> На хостинге без PHP (GitHub Pages, Netlify, Cloudflare Pages) используйте сервис из `server/`
+> (`PUBLIC_LEAD_API_URL`) или Web3Forms (`PUBLIC_WEB3FORMS_KEY`).
 
 ---
 

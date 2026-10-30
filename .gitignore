@@ -8,3 +8,9 @@ public/api/config.php
 .DS_Store
 npm-debug.log*
 public/api/leads.log
+
+# .NET (server/)
+server/**/bin/
+server/**/obj/
+server/**/data/
+*.user

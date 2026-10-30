@@ -68,9 +68,27 @@ server/
 ```bash
 cd server/src/FreshDay.LeadBot
 dotnet user-secrets set "Telegram:BotToken" "123456789:AAH..."
-dotnet user-secrets set "Telegram:Chats:0:Id" "-1001234567890"
 dotnet run
 ```
+
+ID группы начинается с минуса, и команда `user-secrets set` принимает его за параметр. Поэтому
+ID впишите прямо в файл секретов — открыть его в VS Code:
+
+```powershell
+# Windows (PowerShell)
+code $env:APPDATA\Microsoft\UserSecrets\freshday-leadbot-7c1e2b9a\secrets.json
+# macOS / Linux
+code ~/.microsoft/usersecrets/freshday-leadbot-7c1e2b9a/secrets.json
+```
+
+```json
+{
+  "Telegram:BotToken": "123456789:AAH...",
+  "Telegram:Chats:0:Id": "-1001234567890"
+}
+```
+
+Проверить, что сохранилось: `dotnet user-secrets list`.
 
 Сервис поднимется на `http://localhost:5080`. В VS Code то же самое: **Run and Debug →
 «LeadBot: сервис заявок (.NET)»**, а **«Сайт + сервис заявок»** запускает сразу и сайт, и сервис.

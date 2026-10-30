@@ -57,8 +57,53 @@ if (mb_strlen($lead['Имя']) < 2 || !preg_match('/^[+\d\s()\-]{9,20}$/', $lead
 }
 if (($_POST['consent'] ?? '') !== 'yes') respond(false, 'Consent required');
 
-$lines = ["🍽 Новая заявка с сайта"];
-foreach ($lead as $k => $v) if ($v !== '') $lines[] = "<b>{$k}:</b> " . htmlspecialchars($v);
+// Оформление — то же, что у сервиса .NET (server/…/LeadFormatter.cs)
+$e = fn(string $s): string => htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+/** +375 (29) 686-66-92 для белорусских номеров, иначе как ввели */
+$formatPhone = function (string $raw): string {
+    $d = preg_replace('/\D/', '', $raw);
+    if (strlen($d) === 11 && str_starts_with($d, '80')) $d = '375' . substr($d, 2);
+    elseif (strlen($d) === 9 && !str_starts_with(ltrim($raw), '+')) $d = '375' . $d;
+    return strlen($d) === 12 && str_starts_with($d, '375')
+        ? sprintf('+375 (%s) %s-%s-%s', substr($d, 3, 2), substr($d, 5, 3), substr($d, 8, 2), substr($d, 10, 2))
+        : trim($raw);
+};
+
+/** 12.12.2026, сб (через 43 дн.) — по минскому времени (UTC+3) */
+$formatDate = function (string $raw): string {
+    $tz = new DateTimeZone('Europe/Minsk');
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $raw, $tz);
+    if (!$date) return $raw;
+    $today = new DateTimeImmutable('today', $tz);
+    $days = (int)$today->diff($date)->format('%r%a');
+    $rel = match (true) {
+        $days === 0 => 'сегодня',
+        $days === 1 => 'завтра',
+        $days > 1   => "через {$days} дн.",
+        default     => 'дата уже прошла',
+    };
+    $wd = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'][(int)$date->format('w')];
+    return $date->format('d.m.Y') . ", {$wd} ({$rel})";
+};
+
+$lines = ['🍽 <b>Новая заявка с сайта</b> #заявка', ''];
+$lines[] = '👤 Имя: <b>' . $e($lead['Имя']) . '</b>';
+$lines[] = '📞 Телефон: ' . $e($formatPhone($lead['Телефон']));
+if ($lead['Формат'] !== '') $lines[] = '🎉 Формат: ' . $e($lead['Формат']);
+if ($lead['Гостей'] !== '') $lines[] = '👥 Гостей: ' . $e($lead['Гостей']);
+if ($lead['Дата'] !== '')   $lines[] = '📅 Дата: ' . $e($formatDate($lead['Дата']));
+if ($lead['Комментарий'] !== '') {
+    array_push($lines, '', '💬 Комментарий:', '<blockquote>' . $e($lead['Комментарий']) . '</blockquote>');
+}
+$page = $lead['Страница'];
+if (str_starts_with($page, '/') && !str_starts_with($page, '//')) {
+    $host = preg_replace('/[^a-z0-9.\-]/i', '', $_SERVER['HTTP_HOST'] ?? '');
+    $lines[] = '';
+    $lines[] = $host !== ''
+        ? '🔗 Со страницы: <a href="' . $e("https://{$host}{$page}") . '">' . $e($page) . '</a>'
+        : '🔗 Со страницы: ' . $e($page);
+}
 $text = implode("\n", $lines);
 $sent = false;
 

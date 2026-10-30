@@ -1,5 +1,9 @@
 # Настройки для Apache-хостинга (hoster.by, active.by и т.п.)
 Options -Indexes
+
+<Files "web.config">
+  Require all denied
+</Files>
 DirectoryIndex index.html
 ErrorDocument 404 /404.html
 AddDefaultCharset utf-8

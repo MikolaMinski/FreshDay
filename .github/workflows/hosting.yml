@@ -2,7 +2,7 @@
 #
 # Результат кладётся в ветки репозитория, откуда Plesk забирает его через «Развернуть с помощью Git»:
 #   hosting      — готовый сайт (содержимое папки dist) → в httpdocs основного домена;
-#   hosting-api  — собранный сервис заявок .NET (server/) → в папку «Сайта .NET» на поддомене.
+#   hosting-api  — собранный сервис заявок .NET (server/, автономный win-x64) → в папку поддомена api.
 # Пошаговая настройка Plesk — docs/HOSTING.md.
 #
 # Переменные (Settings → Secrets and variables → Actions → Variables):
@@ -63,7 +63,9 @@ jobs:
 
       - name: Сборка сервиса
         run: |
-          dotnet publish server/src/FreshDay.LeadBot -c Release -o api-out /p:UseAppHost=false
+          # Автономная сборка под Windows (IIS): .NET 10 едет вместе с сервисом,
+          # на сервере нужен только модуль ASP.NET Core для IIS.
+          dotnet publish server/src/FreshDay.LeadBot -c Release -r win-x64 --self-contained true -o api-out
           mkdir -p api-out/data
           touch api-out/data/.keep
 

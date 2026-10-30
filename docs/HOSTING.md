@@ -25,17 +25,18 @@ Plesk не умеет собирать Astro и .NET, поэтому собир�
 
 ### 1.1. Адрес сайта для сборки
 
-GitHub → репозиторий → **Settings → Secrets and variables → Actions → Variables**:
+По умолчанию сайт собирается для `https://freshday.by` (адрес задан в `src/config/site.ts`).
+Если нужен другой адрес, задайте переменную GitHub → **Settings → Secrets and variables → Actions
+→ Variables** → `HOSTING_SITE_URL` (например, `https://vh419.by2040.ihb.by`) и запустите
+**Actions → Build for Plesk hosting → Run workflow**. От адреса зависят canonical-ссылки,
+sitemap и разметка для поисковиков.
 
-| Переменная         | Значение                                                      |
-| ------------------ | ------------------------------------------------------------- |
-| `HOSTING_SITE_URL` | `https://vh419.by2040.ihb.by` (позже — `https://freshday.by`) |
-
-От неё зависят canonical-ссылки, sitemap и разметка для поисковиков. Сменили домен — поменяйте
-переменную и запустите **Actions → Build for Plesk hosting → Run workflow**.
-
-Проверьте, что в **Actions** запуск **Build for Plesk hosting** зелёный и в репозитории появилась
+Проверьте, что в **Actions** запуск **Build for Plesk hosting** зелёный и в репозитории есть
 ветка `hosting`.
+
+> **Linux или Windows?** Сайт готов к обоим: на Linux (Apache) работает `.htaccess`, на Windows
+> (IIS) — `web.config`. Настройки ниже одинаковые; путь к корню домена на Windows выглядит как
+> `C:\Inetpub\vhosts\freshday.by`, на Linux — `/var/www/vhosts/freshday.by`.
 
 ### 1.2. HTTPS и PHP в Plesk
 
@@ -125,7 +126,9 @@ JSON. Его стоит поднимать, когда у сайта есть с
    путь — корневая папка субдомена (её показывает Plesk, обычно `api.freshday.by`). Добавьте
    второй webhook в GitHub, как в 1.5.
 4. Настройки **.NET** субдомена:
-   - **Файл запуска** (Startup file): `FreshDay.LeadBot.dll`
+   - **Файл запуска** (Startup file, только Linux): `FreshDay.LeadBot.dll`. На Windows файл
+     запуска не нужен: в ветке `hosting-api` уже лежит `web.config` для IIS, который запускает
+     сервис сам; переменные окружения задаются в настройках ASP.NET Core домена.
    - **Переменные окружения**:
 
      | Имя                          | Значение                             |

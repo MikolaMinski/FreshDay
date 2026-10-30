@@ -1,12 +1,19 @@
 <?php
 /**
  * Приём заявок с сайта → Telegram и/или email.
- * Настройки: скопируйте config.example.php в config.php и заполните.
- * Требования: PHP 8.0+, расширение curl (есть на любом хостинге).
+ * Требования: PHP 8.1+, расширение curl (есть на любом хостинге).
+ * Настройки ищутся в freshday-config.php уровнем выше папки сайта или в api/config.php.
  */
 declare(strict_types=1);
 
-$config = file_exists(__DIR__ . '/config.php') ? require __DIR__ . '/config.php' : [];
+// Настройки ищутся сначала вне папки сайта (Plesk: /var/www/vhosts/<домен>/freshday-config.php —
+// туда не попадает деплой из Git и нет доступа из браузера), затем рядом (api/config.php).
+$privateDir = dirname(__DIR__, 2);
+$configFile = null;
+foreach ([$privateDir . '/freshday-config.php', __DIR__ . '/config.php'] as $f) {
+    if (@is_file($f)) { $configFile = $f; break; }
+}
+$config = $configFile ? require $configFile : [];
 $wantsJson = str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
 
 function respond(bool $ok, string $error = ''): never {
@@ -56,8 +63,9 @@ $text = implode("\n", $lines);
 $sent = false;
 
 // Резервная копия каждой заявки в файл (доступ извне закрыт в .htaccess)
+$logDir = $configFile && str_starts_with($configFile, $privateDir . '/freshday-') ? $privateDir : __DIR__;
 @file_put_contents(
-    __DIR__ . '/leads.log',
+    $logDir . '/' . ($logDir === __DIR__ ? 'leads.log' : 'freshday-leads.log'),
     date('c') . ' ' . json_encode($lead, JSON_UNESCAPED_UNICODE) . PHP_EOL,
     FILE_APPEND | LOCK_EX
 );

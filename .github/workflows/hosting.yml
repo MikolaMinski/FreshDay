@@ -1,0 +1,73 @@
+# Сборка для хостинга с Plesk (hoster.by и т. п.) при каждом push в main.
+#
+# Результат кладётся в ветки репозитория, откуда Plesk забирает его через «Развернуть с помощью Git»:
+#   hosting      — готовый сайт (содержимое папки dist) → в httpdocs основного домена;
+#   hosting-api  — собранный сервис заявок .NET (server/) → в папку «Сайта .NET» на поддомене.
+# Пошаговая настройка Plesk — docs/HOSTING.md.
+#
+# Переменные (Settings → Secrets and variables → Actions → Variables):
+#   HOSTING_SITE_URL      адрес сайта на хостинге, например https://freshday.by
+#   HOSTING_LEAD_API_URL  адрес сервиса заявок, например https://api.freshday.by/api/lead;
+#                         пусто — форма шлёт заявки в api/lead.php на том же хостинге (PHP → Telegram)
+name: Build for Plesk hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hosting
+  cancel-in-progress: false
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Сборка сайта
+        run: npm run build
+        env:
+          SITE_URL: ${{ vars.HOSTING_SITE_URL }}
+          BASE_PATH: /
+          PUBLIC_LEAD_API_URL: ${{ vars.HOSTING_LEAD_API_URL }}
+          PUBLIC_YANDEX_METRIKA_ID: ${{ vars.PUBLIC_YANDEX_METRIKA_ID }}
+          PUBLIC_GA_ID: ${{ vars.PUBLIC_GA_ID }}
+          PUBLIC_YANDEX_VERIFICATION: ${{ vars.PUBLIC_YANDEX_VERIFICATION }}
+          PUBLIC_GOOGLE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_VERIFICATION }}
+
+      - name: Опубликовать в ветку hosting
+        run: bash .github/scripts/publish-branch.sh hosting dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: server/global.json
+
+      - name: Сборка сервиса
+        run: |
+          dotnet publish server/src/FreshDay.LeadBot -c Release -o api-out /p:UseAppHost=false
+          mkdir -p api-out/data
+          touch api-out/data/.keep
+
+      - name: Опубликовать в ветку hosting-api
+        run: bash .github/scripts/publish-branch.sh hosting-api api-out
+        env:
+          GH_TOKEN: ${{ github.token }}

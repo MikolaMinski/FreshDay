@@ -18,6 +18,7 @@ const year = new Date().getFullYear();
       <a href={url('/')} aria-label="На главную">
         <Logo />
       </a>
+      <p class="footer__slogan">{SITE.slogan}</p>
       <p>
         Кейтеринг в Минске и по всей Беларуси: фуршеты, банкеты, свадьбы, корпоративы и кофе-брейки
         под ключ.
@@ -126,6 +127,13 @@ const year = new Date().getFullYear();
   }
   .footer__brand p {
     color: oklch(80% 0.02 150);
+  }
+  .footer__brand .footer__slogan {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-style: italic;
+    font-weight: 600;
+    color: var(--c-accent);
   }
   .footer__social {
     display: flex;

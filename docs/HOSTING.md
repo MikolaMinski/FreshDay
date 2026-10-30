@@ -34,6 +34,10 @@ sitemap и разметка для поисковиков.
 Проверьте, что в **Actions** запуск **Build for Plesk hosting** зелёный и в репозитории есть
 ветка `hosting`.
 
+> **Папка сайта** не всегда `httpdocs`: у дополнительного домена в подписке Plesk создаёт папку
+> с именем домена (`freshday.by`). Точное имя видно внизу карточки домена: «Папка сайта». Ниже
+> вместо `httpdocs` подставляйте её.
+>
 > **Linux или Windows?** Сайт готов к обоим: на Linux (Apache) работает `.htaccess`, на Windows
 > (IIS) — `web.config`. Настройки ниже одинаковые; путь к корню домена на Windows выглядит как
 > `C:\Inetpub\vhosts\freshday.by`, на Linux — `/var/www/vhosts/freshday.by`.

@@ -1,9 +1,23 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "[astro]": { "editor.defaultFormatter": "astro-build.astro-vscode" },
-  "files.associations": { "*.css": "css" },
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
+  },
+  "files.associations": {
+    "*.css": "css"
+  },
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.language": "en,ru",
-  "search.exclude": { "dist": true, ".astro": true, "node_modules": true }
+  "search.exclude": {
+    "dist": true,
+    ".astro": true,
+    "node_modules": true,
+    "server/**/bin": true,
+    "server/**/obj": true
+  },
+  "dotnet.defaultSolution": "server/FreshDay.Server.slnx",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  }
 }

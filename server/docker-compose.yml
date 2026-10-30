@@ -1,0 +1,31 @@
+# Запуск на сервере (VPS) вместе с HTTPS:
+#   cp .env.example .env   # заполнить токен, ID чата и домен
+#   docker compose up -d --build
+# Caddy сам получит сертификат Let's Encrypt для LEADBOT_DOMAIN.
+services:
+  leadbot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      LeadBot__BehindProxy: "true"
+    volumes:
+      - leadbot-data:/app/data
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      LEADBOT_DOMAIN: ${LEADBOT_DOMAIN:?Укажите LEADBOT_DOMAIN в .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - leadbot
+
+volumes:
+  leadbot-data:
+  caddy-data:

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>FreshDay.LeadBot</RootNamespace>
+    <UserSecretsId>freshday-leadbot-7c1e2b9a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FreshDay.LeadBot.Tests" />
+  </ItemGroup>
+
+</Project>

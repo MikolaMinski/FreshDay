@@ -6,6 +6,18 @@
       "name": "Astro: dev server",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "name": "LeadBot: сервис заявок (.NET)",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/server/src/FreshDay.LeadBot/FreshDay.LeadBot.csproj"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Сайт + сервис заявок",
+      "configurations": ["Astro: dev server", "LeadBot: сервис заявок (.NET)"]
     }
   ]
 }

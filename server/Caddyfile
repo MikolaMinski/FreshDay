@@ -1,0 +1,3 @@
+{$LEADBOT_DOMAIN} {
+	reverse_proxy leadbot:8080
+}

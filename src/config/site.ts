@@ -81,6 +81,7 @@ export const SITE = {
 
   /**
    * Обработчик формы заявки (см. README → «Форма заявки»):
+   *  - сервис на .NET (папка server/) → задайте PUBLIC_LEAD_API_URL, это поле игнорируется;
    *  - обычный хостинг с PHP → '/api/lead.php' (заявки в Telegram);
    *  - GitHub Pages и другой хостинг без PHP → задайте ключ PUBLIC_WEB3FORMS_KEY,
    *    тогда заявки пойдут через web3forms.com на ваш email, это поле игнорируется.

@@ -2,7 +2,10 @@
 /**
  * Форма заявки. Работает и без JavaScript (обычная отправка + страница «Спасибо»),
  * а с JS — отправляется в фоне и показывает результат на месте.
- * Куда уходят заявки — настраивается в public/api/config.php (см. README).
+ * Куда уходят заявки (по приоритету, см. README → «Форма заявки»):
+ *  1. PUBLIC_LEAD_API_URL — сервис на .NET из папки server/ → Telegram-группа;
+ *  2. PUBLIC_WEB3FORMS_KEY — web3forms.com → email;
+ *  3. иначе public/api/lead.php (PHP-хостинг) → Telegram.
  */
 import { url, absUrl } from '@/lib/url';
 import { getCollection } from 'astro:content';
@@ -15,9 +18,10 @@ interface Props {
 }
 const { preset } = Astro.props;
 
+const leadApi = import.meta.env.PUBLIC_LEAD_API_URL?.trim();
 // Web3Forms — для хостинга без PHP (GitHub Pages). Ключ публичный по задумке сервиса.
-const web3Key = import.meta.env.PUBLIC_WEB3FORMS_KEY;
-const action = web3Key ? 'https://api.web3forms.com/submit' : url(SITE.formEndpoint);
+const web3Key = leadApi ? undefined : import.meta.env.PUBLIC_WEB3FORMS_KEY;
+const action = leadApi || (web3Key ? 'https://api.web3forms.com/submit' : url(SITE.formEndpoint));
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );

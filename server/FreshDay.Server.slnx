@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FreshDay.LeadBot/FreshDay.LeadBot.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FreshDay.LeadBot.Tests/FreshDay.LeadBot.Tests.csproj" />
+  </Folder>
+</Solution>

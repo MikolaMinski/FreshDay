@@ -18,7 +18,9 @@ interface Props {
 }
 const { preset } = Astro.props;
 
-const leadApi = import.meta.env.PUBLIC_LEAD_API_URL?.trim();
+// «-» — явно выключить сервис и использовать lead.php (так проще задать в переменной сборки)
+const leadApiRaw = import.meta.env.PUBLIC_LEAD_API_URL?.trim();
+const leadApi = leadApiRaw && leadApiRaw !== '-' ? leadApiRaw : undefined;
 // Web3Forms — для хостинга без PHP (GitHub Pages). Ключ публичный по задумке сервиса.
 const web3Key = leadApi ? undefined : import.meta.env.PUBLIC_WEB3FORMS_KEY;
 const action = leadApi || (web3Key ? 'https://api.web3forms.com/submit' : url(SITE.formEndpoint));

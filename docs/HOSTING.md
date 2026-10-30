@@ -154,10 +154,8 @@ IIS — на Windows-хостинге с Plesk он обычно есть.
    группу: он сам напишет ID.
 
 7. Откройте `https://api.freshday.by/health` — должно быть `{"status":"ok"}`.
-8. GitHub → **Settings → Secrets and variables → Actions → Variables** →
-   `HOSTING_LEAD_API_URL` = `https://api.freshday.by/api/lead` → **Actions → Build for Plesk
-   hosting → Run workflow**. Через пару минут форма начнёт слать заявки в сервис вместо
-   `lead.php`.
+8. Форма сайта по умолчанию уже шлёт заявки в `https://api.freshday.by/api/lead`. Вернуть
+   PHP-обработчик — переменная репозитория `HOSTING_LEAD_API_URL` = `-`.
 
 После изменения `appsettings.Production.json` перезапустите сайт субдомена (на карточке:
 **Приостановить → Активировать** или «Перезапустить пул приложений» в настройках IIS).

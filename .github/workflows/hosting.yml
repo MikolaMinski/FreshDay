@@ -7,8 +7,8 @@
 #
 # Переменные (Settings → Secrets and variables → Actions → Variables):
 #   HOSTING_SITE_URL      адрес сайта на хостинге, например https://freshday.by
-#   HOSTING_LEAD_API_URL  адрес сервиса заявок, например https://api.freshday.by/api/lead;
-#                         пусто — форма шлёт заявки в api/lead.php на том же хостинге (PHP → Telegram)
+#   HOSTING_LEAD_API_URL  адрес сервиса заявок; по умолчанию https://api.freshday.by/api/lead
+#                         (сервис .NET 10 из server/). Значение «-» — форма шлёт в api/lead.php (PHP).
 name: Build for Plesk hosting
 
 on:
@@ -41,7 +41,8 @@ jobs:
         env:
           SITE_URL: ${{ vars.HOSTING_SITE_URL }}
           BASE_PATH: /
-          PUBLIC_LEAD_API_URL: ${{ vars.HOSTING_LEAD_API_URL }}
+          # Сервис заявок на .NET 10 (server/) на поддомене api. Переопределить — переменная HOSTING_LEAD_API_URL.
+          PUBLIC_LEAD_API_URL: ${{ vars.HOSTING_LEAD_API_URL || 'https://api.freshday.by/api/lead' }}
           PUBLIC_YANDEX_METRIKA_ID: ${{ vars.PUBLIC_YANDEX_METRIKA_ID }}
           PUBLIC_GA_ID: ${{ vars.PUBLIC_GA_ID }}
           PUBLIC_YANDEX_VERIFICATION: ${{ vars.PUBLIC_YANDEX_VERIFICATION }}

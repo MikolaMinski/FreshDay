@@ -8,10 +8,10 @@ public sealed class LeadBotOptions
     public const string Section = "LeadBot";
 
     /// <summary>
-    /// Адрес сайта вместе с префиксом, например https://mikolaminski.github.io/FreshDay.
+    /// Адрес сайта вместе с префиксом, например https://freshday.by или https://mikolaminski.github.io/FreshDay.
     /// Нужен для перехода на «Спасибо» без JavaScript и для ссылки на страницу в сообщении.
     /// </summary>
-    public string SiteUrl { get; set; } = "https://mikolaminski.github.io/FreshDay";
+    public string SiteUrl { get; set; } = "https://freshday.by";
 
     /// <summary>Откуда разрешено отправлять форму (CORS): только схема и домен, без пути.</summary>
     public string[] AllowedOrigins { get; set; } = [];

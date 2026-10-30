@@ -1,22 +1,22 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v10.0/win-x64",
+    "name": ".NETCoreApp,Version=v10.0/win-x86",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {},
-    ".NETCoreApp,Version=v10.0/win-x64": {
+    ".NETCoreApp,Version=v10.0/win-x86": {
       "FreshDay.LeadBot/1.0.0": {
         "dependencies": {
-          "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "10.0.14",
-          "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64": "10.0.14"
+          "runtimepack.Microsoft.NETCore.App.Runtime.win-x86": "10.0.14",
+          "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x86": "10.0.14"
         },
         "runtime": {
           "FreshDay.LeadBot.dll": {}
         }
       },
-      "runtimepack.Microsoft.NETCore.App.Runtime.win-x64/10.0.14": {
+      "runtimepack.Microsoft.NETCore.App.Runtime.win-x86/10.0.14": {
         "runtime": {
           "Microsoft.CSharp.dll": {
             "assemblyVersion": "10.0.0.0",
@@ -708,7 +708,7 @@
           }
         },
         "native": {
-          "Microsoft.DiaSymReader.Native.amd64.dll": {
+          "Microsoft.DiaSymReader.Native.x86.dll": {
             "fileVersion": "0.0.0.0"
           },
           "System.IO.Compression.Native.dll": {
@@ -718,9 +718,6 @@
             "fileVersion": "0.0.0.0"
           },
           "clrgc.dll": {
-            "fileVersion": "0.0.0.0"
-          },
-          "clrgcexp.dll": {
             "fileVersion": "0.0.0.0"
           },
           "clrjit.dll": {
@@ -741,7 +738,7 @@
           "mscordaccore.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "mscordaccore_amd64_amd64_10.0.1426.52326.dll": {
+          "mscordaccore_x86_x86_10.0.1426.52326.dll": {
             "fileVersion": "0.0.0.0"
           },
           "mscordbi.dll": {
@@ -755,7 +752,7 @@
           }
         }
       },
-      "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/10.0.14": {
+      "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x86/10.0.14": {
         "runtime": {
           "Microsoft.AspNetCore.Antiforgery.dll": {
             "assemblyVersion": "10.0.0.0",
@@ -1340,19 +1337,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.NETCore.App.Runtime.win-x64/10.0.14": {
+    "runtimepack.Microsoft.NETCore.App.Runtime.win-x86/10.0.14": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/10.0.14": {
+    "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x86/10.0.14": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
     }
   },
   "runtimes": {
-    "win-x64": [
+    "win-x86": [
       "win",
       "any",
       "base"

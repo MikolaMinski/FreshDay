@@ -168,3 +168,5 @@ if ($problems) {
 
 // Код причины (без токена) отдаётся в ответе — его видно в браузере: DevTools → Network → lead.php
 respond($sent, $sent ? '' : 'Delivery failed: ' . implode(' | ', $problems));
+
+// build 25de156 2026-11-13T12:22:27Z

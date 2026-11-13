@@ -14,3 +14,5 @@ return [
     'email_to'   => '',
     'email_from' => '',
 ];
+
+// build 25de156 2026-11-13T12:22:27Z

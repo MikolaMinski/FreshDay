@@ -129,6 +129,11 @@ Variables**, локально — в файле `.env`.
 
 ## Публикация на GitHub Pages (бесплатно)
 
+> **Сейчас** основной сайт работает на хостинге (https://freshday.by), а GitHub Pages только
+> переадресует старый адрес `mikolaminski.github.io/FreshDay/` на freshday.by
+> (`.github/workflows/deploy.yml` + `scripts/pages-redirect.mjs`). Инструкция ниже нужна, только
+> если снова понадобится полноценный сайт на GitHub Pages.
+
 В проекте уже есть автодеплой: `.github/workflows/deploy.yml`. После настройки каждый `git push`
 в ветку `main` сам собирает и публикует сайт примерно за 2 минуты.
 

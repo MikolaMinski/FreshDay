@@ -1,11 +1,13 @@
-# Автодеплой на GitHub Pages при каждом push в ветку main.
-# Настройка: Settings → Pages → Source: «GitHub Actions».
+# GitHub Pages: переадресация старого адреса на основной сайт.
 #
-# Адрес сайта определяется автоматически:
-#  - без своего домена → https://<логин>.github.io/<репозиторий>/
-#  - со своим доменом → создайте переменную CUSTOM_DOMAIN (Settings → Secrets and variables →
-#    Actions → Variables), например freshday.by, и укажите тот же домен в Settings → Pages.
-name: Deploy to GitHub Pages
+# Основной сайт живёт на хостинге (https://freshday.by, сборка — hosting.yml).
+# Копия на https://mikolaminski.github.io/FreshDay/ раньше была полноценным сайтом, и Google мог
+# считать freshday.by её дублем. Теперь каждая страница здесь — мгновенная переадресация
+# на ту же страницу основного домена (canonical + meta refresh), чтобы Google перенёс
+# индексацию на freshday.by.
+#
+# Домен берётся из переменной HOSTING_SITE_URL (по умолчанию https://freshday.by).
+name: Deploy to GitHub Pages (redirect)
 
 on:
   push:
@@ -24,42 +26,30 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MAIN_SITE: ${{ vars.HOSTING_SITE_URL || 'https://freshday.by' }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
-      - name: Определить адрес сайта
-        id: addr
-        env:
-          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
-          OWNER: ${{ github.repository_owner }}
-          REPO: ${{ github.event.repository.name }}
-        run: |
-          owner_lc=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
-          if [ -n "$CUSTOM_DOMAIN" ]; then
-            echo "site=https://$CUSTOM_DOMAIN" >> "$GITHUB_OUTPUT"
-            echo "base=/" >> "$GITHUB_OUTPUT"
-          elif [ "$(echo "$REPO" | tr '[:upper:]' '[:lower:]')" = "$owner_lc.github.io" ]; then
-            echo "site=https://$owner_lc.github.io" >> "$GITHUB_OUTPUT"
-            echo "base=/" >> "$GITHUB_OUTPUT"
-          else
-            echo "site=https://$owner_lc.github.io" >> "$GITHUB_OUTPUT"
-            echo "base=/$REPO" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Сборка и загрузка сайта
-        uses: withastro/action@v6
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Сборка (только чтобы получить список страниц)
+        run: npm run build
         env:
-          SITE_URL: ${{ steps.addr.outputs.site }}
-          BASE_PATH: ${{ steps.addr.outputs.base }}
-          PUBLIC_LEAD_API_URL: ${{ vars.PUBLIC_LEAD_API_URL }}
-          PUBLIC_WEB3FORMS_KEY: ${{ vars.PUBLIC_WEB3FORMS_KEY }}
-          PUBLIC_YANDEX_METRIKA_ID: ${{ vars.PUBLIC_YANDEX_METRIKA_ID }}
-          PUBLIC_GA_ID: ${{ vars.PUBLIC_GA_ID }}
-          PUBLIC_YANDEX_VERIFICATION: ${{ vars.PUBLIC_YANDEX_VERIFICATION }}
-          PUBLIC_GOOGLE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_VERIFICATION }}
+          SITE_URL: ${{ env.MAIN_SITE }}
+          BASE_PATH: /
+
+      - name: Страницы-переадресации на основной домен
+        run: node scripts/pages-redirect.mjs dist pages-out "$MAIN_SITE"
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: pages-out
 
   deploy:
     needs: build

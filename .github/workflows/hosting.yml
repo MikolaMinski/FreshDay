@@ -48,6 +48,12 @@ jobs:
           PUBLIC_YANDEX_VERIFICATION: ${{ vars.PUBLIC_YANDEX_VERIFICATION }}
           PUBLIC_GOOGLE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_VERIFICATION }}
 
+      - name: Метка сборки во всех страницах
+        # Plesk при развёртывании копирует только изменившиеся файлы. Метка меняет каждую
+        # страницу и PHP-файл в каждой сборке — так на хостинге не остаются старые версии
+        # (например, файлы, загруженные вручную из zip).
+        run: python3 .github/scripts/stamp-build.py dist
+
       - name: Опубликовать в ветку hosting
         run: bash .github/scripts/publish-branch.sh hosting dist
         env:

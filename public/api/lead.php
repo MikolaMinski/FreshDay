@@ -116,7 +116,14 @@ $logDir = $configFile && str_starts_with($configFile, $privateDir . '/freshday-'
 );
 
 // Telegram
-if (!empty($config['telegram_token']) && !empty($config['telegram_chat_ids'])) {
+$problems = [];
+if (!$configFile) {
+    $problems[] = 'no_config: нет freshday-config.php (уровнем выше папки сайта) и api/config.php';
+} elseif (empty($config['telegram_token']) || empty($config['telegram_chat_ids'])) {
+    $problems[] = 'no_telegram: в настройках пустые telegram_token или telegram_chat_ids';
+} elseif (!function_exists('curl_init')) {
+    $problems[] = 'no_curl: в PHP выключено расширение curl';
+} else {
     foreach ((array)$config['telegram_chat_ids'] as $chatId) {
         $ch = curl_init("https://api.telegram.org/bot{$config['telegram_token']}/sendMessage");
         curl_setopt_array($ch, [
@@ -126,7 +133,15 @@ if (!empty($config['telegram_token']) && !empty($config['telegram_chat_ids'])) {
             CURLOPT_POSTFIELDS => ['chat_id' => $chatId, 'text' => $text, 'parse_mode' => 'HTML'],
         ]);
         $res = curl_exec($ch);
-        $sent = $sent || ($res !== false && curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($res !== false && $code === 200) {
+            $sent = true;
+        } elseif ($res === false) {
+            $problems[] = 'curl: ' . curl_error($ch);
+        } else {
+            $desc = json_decode((string)$res, true)['description'] ?? '';
+            $problems[] = "telegram {$code}: {$desc} (chat {$chatId})";
+        }
         curl_close($ch);
     }
 }
@@ -142,4 +157,14 @@ if (!empty($config['email_to'])) {
     $sent = @mail($config['email_to'], $subject, nl2br($text), $headers) || $sent;
 }
 
-respond($sent, $sent ? '' : 'Delivery failed');
+if ($problems) {
+    // Причина — в журнал рядом с настройками, чтобы было видно, почему заявка не ушла
+    @file_put_contents(
+        $logDir . '/' . ($logDir === __DIR__ ? 'leads.log' : 'freshday-leads.log'),
+        date('c') . ' ОШИБКА ' . implode(' | ', $problems) . "\n",
+        FILE_APPEND | LOCK_EX
+    );
+}
+
+// Код причины (без токена) отдаётся в ответе — его видно в браузере: DevTools → Network → lead.php
+respond($sent, $sent ? '' : 'Delivery failed: ' . implode(' | ', $problems));

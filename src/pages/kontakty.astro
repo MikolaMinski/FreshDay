@@ -68,7 +68,8 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lng}%2C${lat}&z=15&pt=${ln
         <div class="info__item">
           <Icon name="pin" />
           <span>
-            <small>Кухня</small>{contacts.address.locality}, {contacts.address.street}, {contacts.address.district}
+            <small>Кухня</small>
+            {contacts.address.locality}, {contacts.address.street}, {contacts.address.district}
           </span>
         </div>
         <div class="info__item">
@@ -78,6 +79,21 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lng}%2C${lat}&z=15&pt=${ln
             {contacts.hours}
           </span>
         </div>
+
+        {contacts.googleReview && (
+          <a
+            class="info__item"
+            href={contacts.googleReview}
+            target="_blank"
+            rel="noopener"
+            data-goal="review"
+          >
+            <Icon name="star" />
+            <span>
+              <small>Отзывы</small>Оставить отзыв в Google
+            </span>
+          </a>
+        )}
 
         <div class="map" data-map={mapSrc}>
           <button type="button" class="btn btn--ghost">

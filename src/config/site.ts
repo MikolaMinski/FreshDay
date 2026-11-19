@@ -39,6 +39,8 @@ export const SITE = {
     telegram: 'https://t.me/Vovan131313',
     viber: 'viber://chat?number=%2B375296866692',
     instagram: '',
+    /** Ссылка «Оставить отзыв» из профиля Google (Google Business Profile). Пустая строка — скрыть кнопки. */
+    googleReview: 'https://g.page/r/CTuRP9mcsAiAEBM/review',
     address: {
       street: 'ул. Дзержинская, 26А',
       locality: 'аг. Озеро',

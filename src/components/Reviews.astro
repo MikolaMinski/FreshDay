@@ -1,26 +1,53 @@
 ---
-/** Блок отзывов. Рендерится, только если в src/data/reviews.ts есть отзывы. */
+/**
+ * Блок отзывов на главной.
+ * Отзывы — из src/data/reviews.ts; кнопка «Оставить отзыв» ведёт в профиль Google
+ * (SITE.contacts.googleReview). Если нет ни отзывов, ни ссылки — блок не выводится.
+ */
 import { reviews } from '@/data/reviews';
+import { SITE } from '@/config/site';
+import Icon from '@/components/Icon.astro';
+
+const reviewUrl = SITE.contacts.googleReview;
 ---
 
-{reviews.length > 0 && (
+{(reviews.length > 0 || reviewUrl) && (
   <section class="section section--tint">
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Отзывы</span>
-        <h2>Что говорят клиенты</h2>
+        <h2>{reviews.length > 0 ? 'Что говорят клиенты' : 'Заказывали у нас?'}</h2>
+        {reviews.length === 0 && (
+          <p>
+            Расскажите, как прошёл ваш праздник. Отзыв в Google займёт минуту и поможет другим
+            выбрать кейтеринг.
+          </p>
+        )}
       </div>
-      <div class="reviews" data-stagger>
-        {reviews.map((r) => (
-          <figure class="review" data-reveal>
-            <blockquote>{r.text}</blockquote>
-            <figcaption>
-              <strong>{r.name}</strong>
-              <span>{r.event}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      {reviews.length > 0 && (
+        <div class="reviews" data-stagger>
+          {reviews.map((r) => (
+            <figure class="review" data-reveal>
+              <blockquote>{r.text}</blockquote>
+              <figcaption>
+                <strong>{r.name}</strong>
+                <span>{r.event}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+      {reviewUrl && (
+        <a
+          class="btn btn--accent review-cta"
+          href={reviewUrl}
+          target="_blank"
+          rel="noopener"
+          data-goal="review"
+        >
+          <Icon name="star" /> Оставить отзыв в Google
+        </a>
+      )}
     </div>
   </section>
 )}
@@ -50,5 +77,8 @@ import { reviews } from '@/data/reviews';
   }
   .review strong {
     color: var(--c-ink);
+  }
+  .reviews + .review-cta {
+    margin-top: 2rem;
   }
 </style>
